@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:app/src/models/login_register_model.dart';
 import 'package:app/src/services/db_helper.dart';
 import 'package:sqflite/sqflite.dart';
 export 'package:app/src/CRUDs/login_crud.dart';
 
+
 class LoginCRUD extends ChangeNotifier{
   final dbase = DBHelper();
-
+  
   // Estas funciones se encargan se insertar el usuario en la base de datos movil
   Future<void> insertUser(LoginRegisterModel loginModel) async {
   final Database? db = await dbase.database;

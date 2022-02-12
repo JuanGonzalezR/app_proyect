@@ -7,10 +7,16 @@ import 'package:app/src/providers/provider.dart';
 import 'package:app/src/views_pages/login_pages/login_pages.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:app/src/utils/pref_users.dart';
 
-void main() {
-  runApp(Provider(
-      child: MaterialApp(
+void main() async{
+
+  final prefs = PreferenciasUsuario();
+  await prefs.initPrefs();
+
+  runApp(
+    Provider(
+    child: MaterialApp(
     home: const LoginPage(),
     debugShowCheckedModeBanner: false,
     localizationsDelegates: const [

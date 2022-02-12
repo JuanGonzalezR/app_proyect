@@ -204,7 +204,7 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
       stream: bloc.submitValid,
       builder: (context, snapshot) {
         return DesingButtonElevation(
-            snapshot.hasData ? () => _botonLogin(context, bloc, log) : null,
+             () => _botonLogin(context, bloc, log),
             "Iniciar",
             'Comfortaa-Light',
             20.0,
@@ -213,6 +213,13 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
 }
 
 _botonLogin(BuildContext context, LoginBloc bloc, LoginCRUD log) {
+
+  Future<Map<String, dynamic>> datos= bloc.loginFirebase('juang@gmail.com', 'juapa1234*');
+  datos.then((value) => 
+  print(value['ok'])
+  );
+
+
   //Navigator.pushReplacementNamed(context, 'home');
   /*final user = LoginRegisterModel(
       nombre          : 'Juan',

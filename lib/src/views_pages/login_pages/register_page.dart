@@ -42,7 +42,7 @@ class RegisterPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 15.0),
             decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(50.0),
                 boxShadow: const <BoxShadow>[
                   BoxShadow(
                       color: Colors.black26,
@@ -230,12 +230,14 @@ class RegisterPage extends StatelessWidget {
     return StreamBuilder(
         stream: bloc.submitValidReg,
         builder: (context, snapshot) {
-          return DesingButtonElevation(() => __botonRegistrar(context),
+          return DesingButtonElevation(() => __botonRegistrar(context,bloc),
               "Registrar", 'Comfortaa-Light', 20.0, 10.0);
         });
   }
 
-  __botonRegistrar(BuildContext context) {
+  __botonRegistrar(BuildContext context, RegisterBloc bloc) {
+    Future<Map<String, dynamic>> datos = bloc.newUserFirebase('juang@gmail.com', 'juapa1234*');
+    datos.then((value) => print(value['mensaje']));
     //print(utl.FuncionesUtils().selectDateNow(context));
   }
 }

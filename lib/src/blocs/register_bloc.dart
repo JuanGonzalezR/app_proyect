@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:app/src/blocs/validators.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:app/src/utils/consts_utils.dart';
 
 class RegisterBloc with Validators {
 
@@ -33,6 +36,30 @@ class RegisterBloc with Validators {
   String get getRepeatPassBlocReg  => _repeatpasswordControllerRegister.value;
   String get getEmailBlocReg  => _emailControllerRegister.value;
   String get getPasswordBlocReg  => _passwordControllerRegister.value;
+
+  //Funcion para crear el usuario en Firebase
+  Future<Map<String,dynamic>> newUserFirebase(String email,String password) async {
+    final authData = {
+      'email'   :email,
+      'password':password,
+      'returnSecureToken':true
+    };
+
+    final resp = await http.post(
+      Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${constante.tokenFirebase}'),
+      body: json.encode( authData )
+      );
+
+      Map<String,dynamic> decodeResp = json.decode(resp.body);
+
+      //print(decodeResp);
+
+      if (decodeResp.containsKey('idToken')) {
+        return {'ok':true,'token':decodeResp['idToken']};
+      }else{
+        return {'ok':false,'mensaje': decodeResp['error']['message']};
+      }
+  }
   
   dispose() {
     _emailControllerRegister.close();
