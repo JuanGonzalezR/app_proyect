@@ -1,0 +1,423 @@
+import 'package:flutter/material.dart';
+import 'package:app/src/blocs/register_bloc.dart';
+import 'package:app/src/providers/provider.dart';
+import 'package:app/src/utils/consts_utils.dart';
+import 'package:app/src/utils/countrys.dart' as list;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+String _opcionSeleccionada = 'Seleccionar pais';
+
+// Este es el diseno de los botones especificos
+class DesingButtonOutline extends StatefulWidget {
+  final String texto;
+  final String font;
+  final Function() onPress;
+
+  const DesingButtonOutline(this.onPress, this.texto, this.font, {Key? key})
+      : super(key: key);
+
+  @override
+  State<DesingButtonOutline> createState() => _DesingButtonOutlineState();
+}
+
+class _DesingButtonOutlineState extends State<DesingButtonOutline> {
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: widget.onPress,
+      child: Text(widget.texto,
+          style: TextStyle(fontFamily: widget.font, fontSize: 15.0)),
+    );
+  }
+}
+
+// Este es el diseno de los botones generales
+class DesingButtonElevation extends StatefulWidget {
+  final Function()? onPress;
+  final String title;
+  final String font;
+  final double tama;
+  final double padding;
+
+  const DesingButtonElevation(
+      this.onPress, this.title, this.font, this.tama, this.padding,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  State<DesingButtonElevation> createState() => _DesingButtonElevationState();
+}
+
+class _DesingButtonElevationState extends State<DesingButtonElevation> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: widget.onPress,
+          child: Text(widget.title),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.blue,
+            textStyle:
+                TextStyle(fontFamily: widget.font, fontSize: widget.tama),
+            padding: EdgeInsets.all(widget.padding),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+            elevation: 5.0,
+          ),
+        ));
+  }
+}
+
+// Este es el diseno para las cajas de texto, especialmente para formularios
+class DesingTextField extends StatefulWidget {
+  final String hint;
+  final String label;
+  final String? errorText;
+  final IconData iconoExterior;
+  final Widget iconoInterior;
+  final Color colorIcono;
+  final Color colorCicle;
+  final Function(String) onChange;
+  final Function() onTap;
+  final TextInputType textType;
+  final String font;
+  final bool oculto;
+
+  const DesingTextField(
+      this.hint,
+      this.label,
+      this.errorText,
+      this.iconoExterior,
+      this.iconoInterior,
+      this.colorIcono,
+      this.colorCicle,
+      this.onChange,
+      this.onTap,
+      this.textType,
+      this.font,
+      this.oculto,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  State<DesingTextField> createState() => _DesingTextFieldState();
+}
+
+class _DesingTextFieldState extends State<DesingTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onTap: widget.onTap,
+      obscureText: widget.oculto,
+      keyboardType: widget.textType,
+      style: TextStyle(fontFamily: widget.font),
+      decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          hintText: widget.hint,
+          labelText: widget.label,
+          errorText: widget.errorText,
+          suffixIcon: widget.iconoInterior,
+          icon: CircleAvatar(
+            backgroundColor: widget.colorCicle,
+            child: FaIcon(
+              widget.iconoExterior,
+              color: widget.colorIcono,
+            ),
+          )),
+      onChanged: widget.onChange,
+    );
+  }
+}
+
+// Este es el diseno para el datapicker
+class DesingDatepicker extends StatefulWidget {
+  final String hint;
+  final String label;
+  final IconData iconoExterior;
+  final Widget iconoInterior;
+  final Color colorIcono;
+  final Color colorCicle;
+  final Function(String) onChange;
+  final Function() onTap;
+  final TextInputType textType;
+  final String font;
+
+  const DesingDatepicker(
+      this.hint,
+      this.label,
+      this.iconoExterior,
+      this.iconoInterior,
+      this.colorIcono,
+      this.colorCicle,
+      this.onChange,
+      this.onTap,
+      this.textType,
+      this.font,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  State<DesingDatepicker> createState() => _DesingDatePickerState();
+}
+
+class _DesingDatePickerState extends State<DesingDatepicker> {
+  String fecha = '';
+  TextEditingController controllerText = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final registerBloc = Provider.ofRegisterBloc(context);
+
+    return TextField(
+      enableInteractiveSelection: false,
+      onTap: () => _onTapDatePicker(registerBloc),
+      controller: controllerText,
+      style: TextStyle(fontFamily: widget.font),
+      decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          hintText: widget.hint,
+          labelText: widget.label,
+          suffixIcon: widget.iconoInterior,
+          icon: CircleAvatar(
+            backgroundColor: widget.colorCicle,
+            child: FaIcon(
+              widget.iconoExterior,
+              color: widget.colorIcono,
+            ),
+          )),
+      onChanged: widget.onChange,
+    );
+  }
+
+  _onTapDatePicker(RegisterBloc bloc) {
+    FocusScope.of(context).requestFocus(FocusNode());
+    _selectDate(bloc);
+  }
+
+  void _selectDate(RegisterBloc bloc) async {
+    DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1930),
+        lastDate: DateTime(2050),
+        locale: const Locale('es', 'ES'));
+
+    if (picked != null) {
+      setState(() {
+        fecha = picked.toString();
+        String fechaFin = fecha.substring(0, 10);
+        controllerText.text = fechaFin;
+        bloc.changeFechaNacimientoReg(fechaFin);
+
+        //print(fechaFin);
+      });
+    }
+  }
+
+
+  
+}
+
+// Este diseno es para la lista desplegable
+class DesingDropdown extends StatefulWidget {
+  const DesingDropdown({Key? key}) : super(key: key);
+
+  @override
+  _DesingDropdownState createState() => _DesingDropdownState();
+}
+
+class _DesingDropdownState extends State<DesingDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    return _crearDropdown();
+  }
+
+  List<DropdownMenuItem<Object>>? _getOpcionesDropdown() {
+    List<DropdownMenuItem<Object>>? lista = [];
+
+    for (var element in list.paises) {
+      lista.add(DropdownMenuItem(
+        child: Text(element),
+        value: element,
+      ));
+    }
+    return lista;
+  }
+
+  Widget _crearDropdown() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const CircleAvatar(
+            backgroundColor: Colors.blueAccent,
+            child: Icon(Icons.person_pin_circle)
+          ),
+          const SizedBox(width: 22.0,),
+          DropdownButton(
+                    items: _getOpcionesDropdown(),
+                    value: _opcionSeleccionada,
+                    style: const TextStyle(fontSize: 20.0,color: Colors.black54,fontFamily: 'Comfortaa-Light'),
+                    focusColor: Colors.deepPurple[200],
+                    onChanged: (opt) {
+                      setState(() {
+                        _opcionSeleccionada = opt.toString();
+                        //print(_opcionSeleccionada);
+                      });
+                    }),
+        ],
+      ),
+    );
+  }
+}
+
+//Este es el diseno para los botones de texto
+class DesingTextButton extends StatefulWidget {
+  final String texto;
+  final String font;
+  final Function() onPress;
+
+  const DesingTextButton(this.texto, this.font, this.onPress, {Key? key})
+      : super(key: key);
+
+  @override
+  State<DesingTextButton> createState() => _DesingTextButtonState();
+}
+
+class _DesingTextButtonState extends State<DesingTextButton> {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: widget.onPress,
+      child: Text(widget.texto,
+          style: TextStyle(fontFamily: widget.font, fontSize: 15.0)),
+    );
+  }
+}
+
+// Este es el diseno de recordar contrasena que esta ubicado en el login
+class RecordarPass extends StatefulWidget {
+  const RecordarPass({Key? key}) : super(key: key);
+
+  @override
+  RecordarPassState createState() => RecordarPassState();
+}
+
+class RecordarPassState extends State<RecordarPass> {
+  bool isChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.green;
+    }
+
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            constante.recordarContra,
+            style: const TextStyle(fontFamily: 'Comfortaa-Light', fontSize: 15.0),
+          ),
+          Checkbox(
+            checkColor: Colors.white,
+            fillColor: MaterialStateProperty.resolveWith(getColor),
+            overlayColor: MaterialStateProperty.resolveWith(getColor),
+            value: isChecked,
+            onChanged: (bool? value) {
+              setState(() {
+                isChecked = value!;
+              });
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
+
+enum SingingCharacter { masculino, femenino, otros }
+
+class DesingRadioButton extends StatefulWidget {
+  const DesingRadioButton({Key? key}) : super(key: key);
+
+  @override
+  _DesingRadioButtonState createState() => _DesingRadioButtonState();
+ }
+class _DesingRadioButtonState extends State<DesingRadioButton> {
+
+  SingingCharacter? _character = SingingCharacter.masculino;
+
+  @override
+  Widget build(BuildContext context) {
+   return Column(
+     mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children:const [
+              CircleAvatar(
+              backgroundColor: Colors.blueAccent,
+              child: Icon(Icons.badge)
+            ),
+           SizedBox(width: 22.0,),
+           Text('Genero',style: TextStyle(fontSize: 20.0,color: Colors.black54,fontFamily: 'Comfortaa-Light'),),
+          
+          ],
+        ),
+        const SizedBox(height: 10.0,),
+        ListTile(
+          title: const Text('Masculino'),
+          trailing: const Icon(Icons.male),
+          leading: Radio<SingingCharacter>(
+            value: SingingCharacter.masculino,
+            groupValue: _character,
+            onChanged: (SingingCharacter? value) {
+              setState(() {
+                _character = value;
+              });
+            },
+          ),
+        ),
+        ListTile(
+          title: const Text('Femenino'),
+          trailing: const Icon(Icons.female),
+          leading: Radio<SingingCharacter>(
+            value: SingingCharacter.femenino,
+            groupValue: _character,
+            onChanged: (SingingCharacter? value) {
+              setState(() {
+                _character = value;
+              });
+            },
+          ),
+        ),
+        ListTile(
+          title: const Text('Otros'),
+          trailing: const Icon(Icons.people_outline_sharp),
+          leading: Radio<SingingCharacter>(
+            value: SingingCharacter.otros,
+            groupValue: _character,
+            onChanged: (SingingCharacter? value) {
+              setState(() {
+                _character = value;
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
