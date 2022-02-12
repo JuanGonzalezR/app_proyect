@@ -1,3 +1,4 @@
+import 'package:app/src/utils/pref_users.dart';
 import 'package:app/src/views_pages/login_pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
@@ -214,14 +215,15 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
 
 _botonLogin(BuildContext context, LoginBloc bloc, LoginCRUD log) {
 
+  /*final _prefs = PreferenciasUsuario();
   Future<Map<String, dynamic>> datos= bloc.loginFirebase('juang@gmail.com', 'juapa1234*');
   datos.then((value) => 
-  print(value['ok'])
+  _prefs.token = value['token']
   );
 
 
-  //Navigator.pushReplacementNamed(context, 'home');
-  /*final user = LoginRegisterModel(
+  Navigator.pushReplacementNamed(context, 'home');
+  final user = LoginRegisterModel(
       nombre          : 'Juan',
       apellido        : 'Gonzalez',
       email           : 'jp@gmail.com',

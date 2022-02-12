@@ -1,15 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-/*
-  Recordar instalar el paquete de:
-    shared_preferences:
-  Inicializar en el main
-    final prefs = new PreferenciasUsuario();
-    await prefs.initPrefs();
-    
-    Recuerden que el main() debe de ser async {...
-*/
-
 class PreferenciasUsuario {
 
   static final PreferenciasUsuario _instancia = PreferenciasUsuario._internal();
@@ -20,38 +10,28 @@ class PreferenciasUsuario {
 
   PreferenciasUsuario._internal();
 
-  SharedPreferences? _prefs;
+  late SharedPreferences _prefs;
 
   initPrefs() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  // GET y SET del nombre
-  String get nombre {
-    return _prefs?.getString('nombre') ?? '';
-  }
-
-  set nombre( String value ) {
-    _prefs?.setString('nombre', value);
-  }
-
   // GET y SET del token
   String get token {
-    return _prefs?.getString('token') ?? '';
+    return _prefs.getString('token') ?? '';
   }
 
   set token( String value ) {
-    _prefs?.setString('token', value);
+    _prefs.setString('token', value);
   }
-  
 
-  // GET y SET de la última página
+    // GET y SET ultimaPagina
   String get ultimaPagina {
-    return _prefs?.getString('ultimaPagina') ?? 'login';
+    return _prefs.getString('ultimaPagina') ?? 'home';
   }
 
   set ultimaPagina( String value ) {
-    _prefs?.setString('ultimaPagina', value);
+    _prefs.setString('ultimaPagina', value);
   }
 
 }

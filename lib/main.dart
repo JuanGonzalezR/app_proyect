@@ -11,8 +11,10 @@ import 'package:app/src/utils/pref_users.dart';
 
 void main() async{
 
+  WidgetsFlutterBinding.ensureInitialized();
   final prefs = PreferenciasUsuario();
   await prefs.initPrefs();
+  //print(prefs.token);
 
   runApp(
     Provider(

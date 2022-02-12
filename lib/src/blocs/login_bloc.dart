@@ -44,7 +44,7 @@ class LoginBloc with Validators {
       if (decodeResp.containsKey('idToken')) {
 
         //Se guarda el usuario en las preferencias
-        _prefs.token = decodeResp['idToken'];
+        //_prefs.token = decodeResp['idToken'];
 
         return {'ok':true,'token':decodeResp['idToken']};
       }else{
