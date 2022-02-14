@@ -17,6 +17,7 @@ class RegisterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Registrate ahora"),
+        backgroundColor: const Color.fromRGBO(144, 12, 63, 1.0),
       ),
       body: Stack(
         children: [other.crearFondo(context), _loginForm(context)],
@@ -42,7 +43,7 @@ class RegisterPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 15.0),
             decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(50.0),
+                borderRadius: BorderRadius.circular(30.0),
                 boxShadow: const <BoxShadow>[
                   BoxShadow(
                       color: Colors.black26,
@@ -231,7 +232,7 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.submitValidReg,
         builder: (context, snapshot) {
           return DesingButtonElevation(() => __botonRegistrar(context,bloc),
-              "Registrar", 'Comfortaa-Light', 20.0, 10.0);
+              "Registrar", 'Comfortaa-Bold', 20.0, 10.0);
         });
   }
 

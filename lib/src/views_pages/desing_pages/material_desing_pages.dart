@@ -25,8 +25,22 @@ class _DesingButtonOutlineState extends State<DesingButtonOutline> {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: widget.onPress,
-      child: Text(widget.texto,
-          style: TextStyle(fontFamily: widget.font, fontSize: 15.0)),
+      style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(constante.colorSecundario),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: const BorderSide(color: Colors.red)))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(widget.texto,
+              style: TextStyle(
+                  fontFamily: widget.font, fontSize: 17.0, color: Colors.white)),
+          const SizedBox(width: 10,),
+          const FaIcon(FontAwesomeIcons.angleDoubleRight,color: Colors.white,)
+        ],
+      ),
     );
   }
 }
@@ -57,7 +71,7 @@ class _DesingButtonElevationState extends State<DesingButtonElevation> {
           onPressed: widget.onPress,
           child: Text(widget.title),
           style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
+            primary: constante.colorSecundario,
             textStyle:
                 TextStyle(fontFamily: widget.font, fontSize: widget.tama),
             padding: EdgeInsets.all(widget.padding),
@@ -120,7 +134,7 @@ class _DesingTextFieldState extends State<DesingTextField> {
           errorText: widget.errorText,
           suffixIcon: widget.iconoInterior,
           icon: CircleAvatar(
-            backgroundColor: widget.colorCicle,
+            backgroundColor: constante.colorPrincipal,
             child: FaIcon(
               widget.iconoExterior,
               color: widget.colorIcono,
@@ -181,7 +195,7 @@ class _DesingDatePickerState extends State<DesingDatepicker> {
           labelText: widget.label,
           suffixIcon: widget.iconoInterior,
           icon: CircleAvatar(
-            backgroundColor: widget.colorCicle,
+            backgroundColor: constante.colorPrincipal,
             child: FaIcon(
               widget.iconoExterior,
               color: widget.colorIcono,
@@ -215,9 +229,6 @@ class _DesingDatePickerState extends State<DesingDatepicker> {
       });
     }
   }
-
-
-  
 }
 
 // Este diseno es para la lista desplegable
@@ -251,22 +262,29 @@ class _DesingDropdownState extends State<DesingDropdown> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundColor: Colors.blueAccent,
-            child: Icon(Icons.person_pin_circle)
+          CircleAvatar(
+              backgroundColor: constante.colorPrincipal,
+              child: const Icon(
+                Icons.person_pin_circle,
+                color: Colors.white,
+              )),
+          const SizedBox(
+            width: 22.0,
           ),
-          const SizedBox(width: 22.0,),
           DropdownButton(
-                    items: _getOpcionesDropdown(),
-                    value: _opcionSeleccionada,
-                    style: const TextStyle(fontSize: 20.0,color: Colors.black54,fontFamily: 'Comfortaa-Light'),
-                    focusColor: Colors.deepPurple[200],
-                    onChanged: (opt) {
-                      setState(() {
-                        _opcionSeleccionada = opt.toString();
-                        //print(_opcionSeleccionada);
-                      });
-                    }),
+              items: _getOpcionesDropdown(),
+              value: _opcionSeleccionada,
+              style: const TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black54,
+                  fontFamily: 'Comfortaa-Light'),
+              focusColor: Colors.deepPurple[200],
+              onChanged: (opt) {
+                setState(() {
+                  _opcionSeleccionada = opt.toString();
+                  //print(_opcionSeleccionada);
+                });
+              }),
         ],
       ),
     );
@@ -292,7 +310,8 @@ class _DesingTextButtonState extends State<DesingTextButton> {
     return TextButton(
       onPressed: widget.onPress,
       child: Text(widget.texto,
-          style: TextStyle(fontFamily: widget.font, fontSize: 15.0)),
+          style: TextStyle(
+              fontFamily: widget.font, fontSize: 15.0, color: Colors.black54)),
     );
   }
 }
@@ -306,7 +325,8 @@ class RecordarPass extends StatefulWidget {
 }
 
 class RecordarPassState extends State<RecordarPass> {
-  bool isChecked = false;
+  //Se debe pasar por manejo de estado
+  bool isChecked = true;
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +337,7 @@ class RecordarPassState extends State<RecordarPass> {
         MaterialState.focused,
       };
       if (states.any(interactiveStates.contains)) {
-        return Colors.blue;
+        return Colors.white;
       }
       return Colors.green;
     }
@@ -329,12 +349,14 @@ class RecordarPassState extends State<RecordarPass> {
         children: [
           Text(
             constante.recordarContra,
-            style: const TextStyle(fontFamily: 'Comfortaa-Light', fontSize: 15.0),
+            style:
+                const TextStyle(fontFamily: 'Comfortaa-Light', fontSize: 15.0),
           ),
           Checkbox(
             checkColor: Colors.white,
             fillColor: MaterialStateProperty.resolveWith(getColor),
             overlayColor: MaterialStateProperty.resolveWith(getColor),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             value: isChecked,
             onChanged: (bool? value) {
               setState(() {
@@ -355,29 +377,40 @@ class DesingRadioButton extends StatefulWidget {
 
   @override
   _DesingRadioButtonState createState() => _DesingRadioButtonState();
- }
-class _DesingRadioButtonState extends State<DesingRadioButton> {
+}
 
+class _DesingRadioButtonState extends State<DesingRadioButton> {
   SingingCharacter? _character = SingingCharacter.masculino;
 
   @override
   Widget build(BuildContext context) {
-   return Column(
-     mainAxisAlignment: MainAxisAlignment.start,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children:const [
-              CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.badge)
+          children: [
+            CircleAvatar(
+                backgroundColor: constante.colorPrincipal,
+                child: const Icon(
+                  Icons.badge,
+                  color: Colors.white,
+                )),
+            const SizedBox(
+              width: 22.0,
             ),
-           SizedBox(width: 22.0,),
-           Text('Genero',style: TextStyle(fontSize: 20.0,color: Colors.black54,fontFamily: 'Comfortaa-Light'),),
-          
+            const Text(
+              'Genero',
+              style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black54,
+                  fontFamily: 'Comfortaa-Light'),
+            ),
           ],
         ),
-        const SizedBox(height: 10.0,),
+        const SizedBox(
+          height: 10.0,
+        ),
         ListTile(
           title: const Text('Masculino'),
           trailing: const Icon(Icons.male),

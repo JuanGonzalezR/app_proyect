@@ -9,8 +9,8 @@ class OthersWidget {
     decoration: const BoxDecoration(
       gradient: LinearGradient(
         colors: <Color>[
-          Color.fromRGBO(63, 63, 156, 1.0),
-          Color.fromRGBO(90, 70, 178, 1.0),
+          Color.fromRGBO(144, 12, 63, 1.0),
+          Color.fromRGBO(239, 154, 154, 1.0),
         ]
       )
     ),

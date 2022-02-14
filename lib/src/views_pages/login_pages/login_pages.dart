@@ -1,9 +1,9 @@
-import 'package:app/src/utils/pref_users.dart';
 import 'package:app/src/views_pages/login_pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
 import 'package:app/src/providers/provider.dart';
 import 'package:app/src/views_pages/desing_pages/material_desing_pages.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,8 +31,8 @@ Widget _crearFondo(BuildContext context) {
     width: double.infinity,
     decoration: const BoxDecoration(
         gradient: LinearGradient(colors: <Color>[
-      Color.fromRGBO(63, 63, 156, 1.0),
-      Color.fromRGBO(90, 70, 178, 1.0),
+      Color.fromRGBO(144, 12, 63, 1.0),
+      Color.fromRGBO(239, 154, 154, 1.0),
     ])),
   );
 
@@ -47,6 +47,9 @@ Widget _crearFondo(BuildContext context) {
   return Stack(
     children: <Widget>[
       fondoMorado,
+      Positioned(top: 90.0, left: 30.0, child: circulo),
+      Positioned(top: -40.0, right: -30.0, child: circulo),
+      Positioned(bottom: -50.0, right: -10.0, child: circulo),
       Positioned(top: 90.0, left: 30.0, child: circulo),
       Positioned(top: -40.0, right: -30.0, child: circulo),
       Positioned(bottom: -50.0, right: -10.0, child: circulo),
@@ -65,7 +68,7 @@ Widget _crearFondo(BuildContext context) {
             ),
             Text(
               "Iniciar Sesion",
-              style: TextStyle(color: Colors.white, fontSize: 25.0),
+              style: TextStyle(color: Colors.white, fontSize: 25.0, fontFamily: 'Comfortaa-Bold'),
             )
           ],
         ),
@@ -120,18 +123,23 @@ Widget _loginForm(BuildContext context) {
                 const SizedBox(
                   height: 10.0,
                 ),
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  DesingTextButton(
-                      'olvidaste la contrasena ?', 'Comfortaa-Light', () {}),
-                  DesingButtonOutline(() {
-                    Navigator.push<void>(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => const RegisterPage(),
-                      ),
-                    );
-                  }, 'Quiero registrarme', 'Comfortaa-Light')
-                ])
+                DesingButtonOutline(() {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const RegisterPage(),
+                    ),
+                  );
+                }, 'Quiero registrarme', 'Comfortaa-Bold'),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                _crearBotonGoogle(blocLogin, context, log),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                DesingTextButton(
+                    'olvidaste la contrasena ?', 'Comfortaa-Light', () {}),
               ],
             ),
           ),
@@ -206,8 +214,8 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
       builder: (context, snapshot) {
         return DesingButtonElevation(
              () => _botonLogin(context, bloc, log),
-            "Iniciar",
-            'Comfortaa-Light',
+            "Ingresar",
+            'Comfortaa-Bold',
             20.0,
             10.0);
       });
@@ -236,4 +244,19 @@ _botonLogin(BuildContext context, LoginBloc bloc, LoginCRUD log) {
       fechaInactivacion : '12/12/2022',
       estado            : 'A',
     );*/
+}
+
+Widget _crearBotonGoogle(LoginBloc blocLogin, BuildContext context, LoginCRUD log) {
+  return SizedBox(
+    width: double.infinity,
+    child: SignInButton(
+      Buttons.Google,
+      text: "Registrese con Google ",
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50.0),
+      ),
+      elevation: 5.0,
+      onPressed: () {},
+    ),
+  );
 }
