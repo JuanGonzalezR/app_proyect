@@ -1,3 +1,5 @@
+import 'package:app/src/utils/auth_firebase.dart';
+import 'package:app/src/utils/pref_users.dart';
 import 'package:app/src/views_pages/login_pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
@@ -80,6 +82,7 @@ Widget _crearFondo(BuildContext context) {
 Widget _loginForm(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final blocLogin = Provider.ofLoginBloc(context);
+  //final _prefs = PreferenciasUsuario();
   final log = LoginCRUD();
 
   return SingleChildScrollView(
@@ -109,7 +112,7 @@ Widget _loginForm(BuildContext context) {
               children: [
                 _crearEmail(blocLogin),
                 const SizedBox(
-                  height: 30.0,
+                  height: 40.0,
                 ),
                 _crearPassword(blocLogin),
                 const SizedBox(
@@ -212,8 +215,7 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
   return StreamBuilder(
       stream: bloc.submitValid,
       builder: (context, snapshot) {
-        return DesingButtonElevation(
-             () => _botonLogin(context, bloc, log),
+        return DesingButtonElevation(snapshot.hasData ? ()=> _botonLogin(bloc) : null,
             "Ingresar",
             'Comfortaa-Bold',
             20.0,
@@ -221,14 +223,26 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
       });
 }
 
-_botonLogin(BuildContext context, LoginBloc bloc, LoginCRUD log) {
+Future _botonLogin(LoginBloc bloc) async {
 
+  final _pref = PreferenciasUsuario();
+
+  if (bloc.getEmailBlog.isNotEmpty && bloc.getPasswordBlog.isNotEmpty) {
+    await loginFirebase(bloc.getEmailBlog,bloc.getPasswordBlog).then((value){
+    if (value['ok'] == true) {
+    _pref.token = value['token'];
+    }else{
+      print(value['mensaje']);
+    }
+    }
+  );
+  }
+  
   /*final _prefs = PreferenciasUsuario();
   Future<Map<String, dynamic>> datos= bloc.loginFirebase('juang@gmail.com', 'juapa1234*');
   datos.then((value) => 
   _prefs.token = value['token']
   );
-
 
   Navigator.pushReplacementNamed(context, 'home');
   final user = LoginRegisterModel(

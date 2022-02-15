@@ -15,7 +15,8 @@ void main() async{
   await Firebase.initializeApp();
   final prefs = PreferenciasUsuario();
   await prefs.initPrefs();
-  //print(prefs.token);
+
+  //print(prefs.rememberUser);
 
   runApp(
     Provider(

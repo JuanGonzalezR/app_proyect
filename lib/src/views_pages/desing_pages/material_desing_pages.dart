@@ -1,3 +1,4 @@
+import 'package:app/src/utils/pref_users.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/blocs/register_bloc.dart';
 import 'package:app/src/providers/provider.dart';
@@ -6,6 +7,7 @@ import 'package:app/src/utils/countrys.dart' as list;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 String _opcionSeleccionada = 'Seleccionar pais';
+final pref = PreferenciasUsuario();
 
 // Este es el diseno de los botones especificos
 class DesingButtonOutline extends StatefulWidget {
@@ -357,16 +359,23 @@ class RecordarPassState extends State<RecordarPass> {
             fillColor: MaterialStateProperty.resolveWith(getColor),
             overlayColor: MaterialStateProperty.resolveWith(getColor),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            value: isChecked,
+            value: pref.rememberUser,
             onChanged: (bool? value) {
               setState(() {
+                _addPrefs(value);
                 isChecked = value!;
+
+                print(pref.rememberUser);
               });
             },
           )
         ],
       ),
     );
+  }
+
+  void _addPrefs(bool? valor) async{
+    pref.rememberUser = valor! ;
   }
 }
 

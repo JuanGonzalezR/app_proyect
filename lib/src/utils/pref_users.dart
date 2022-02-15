@@ -25,6 +25,16 @@ class PreferenciasUsuario {
     _prefs.setString('token', value);
   }
 
+
+  // GET y SET de recordar usuario
+  bool get rememberUser {
+    return _prefs.getBool('rememberUser') ?? true;
+  }
+
+  set rememberUser( bool value ) {
+    _prefs.setBool('rememberUser', value);
+  }
+
     // GET y SET ultimaPagina
   String get ultimaPagina {
     return _prefs.getString('ultimaPagina') ?? 'home';

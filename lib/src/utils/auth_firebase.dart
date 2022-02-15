@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:app/src/utils/consts_utils.dart';
+import 'dart:convert';
 
-Future<String> signInWithGoogle() async {
-
-  UserCredential userCredential;
-  String message = '';
+Future<UserCredential> signInWithGoogle() async {
 
   // Trigger the authentication flow
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -19,18 +19,36 @@ Future<String> signInWithGoogle() async {
   );
 
   // Once signed in, return the UserCredential
-  userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-  final user = userCredential.user;
-
-  if (user != null) {
-    // Code for when authentication is valid 
-    //tokenGoogle = user.uid;
-    message = 'Welcome ${user.displayName}, your address is ${user.email}';
-  }
-  
-  return message != '' ? message : 'Not authentication';
+  return await FirebaseAuth.instance.signInWithCredential(credential);
 }
+
+//Funcion para realizar login de cuenta en Firebase
+  Future<Map<String,dynamic>> loginFirebase(String email,String password) async {
+    final authData = {
+      'email'   :email,
+      'password':password,
+      'returnSecureToken':true
+    };
+
+    final resp = await http.post(
+      Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${constante.tokenFirebase}'),
+      body: json.encode( authData )
+      );
+
+      Map<String,dynamic> decodeResp = json.decode(resp.body);
+
+      //print(decodeResp);
+
+      if (decodeResp.containsKey('idToken')) {
+
+        //Se guarda el token en las preferencias para iniciar hasta el home
+        //_prefs.token = decodeResp['idToken'];
+
+        return {'ok':true,'token':decodeResp['idToken']};
+      }else{
+        return {'ok':false,'mensaje': decodeResp['error']['message']};
+      }
+  }
 
 void _signOut() async {
   FirebaseAuth _auth = FirebaseAuth.instance;
