@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/src/views_pages/home_pages/home_pages.dart';
@@ -14,14 +15,16 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final prefs = PreferenciasUsuario();
+  String routeInit = 'login';
   await prefs.initPrefs();
-
-  //print(prefs.rememberUser);
+  //print(prefs.token);
 
   runApp(
     Provider(
     child: MaterialApp(
     home: const LoginPage(),
+    builder: BotToastInit(), //1. call BotToastInit
+    navigatorObservers: [BotToastNavigatorObserver()],
     debugShowCheckedModeBanner: false,
     localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate,
@@ -33,7 +36,7 @@ void main() async{
       Locale('es', 'ES'), // Spanish, no country code
     ],
     theme: ThemeData(fontFamily: 'Comfortaa-Light'),
-    initialRoute: 'login',
+    initialRoute: routeInit,
     routes: <String, Widget Function(BuildContext)>{
       'login': (BuildContext context) => const LoginPage(),
       'home': (BuildContext context) => const HomePage(),

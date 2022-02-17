@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:app/src/blocs/validators.dart';
-import 'package:app/src/utils/pref_users.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc with Validators {
 
-  final _prefs = PreferenciasUsuario();
+  //final _prefs = PreferenciasUsuario();
 
   final _emailController      = BehaviorSubject<String>();
   final _passwordController   = BehaviorSubject<String>();

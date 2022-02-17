@@ -1,14 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:app/src/blocs/register_bloc.dart';
+import 'package:app/src/models/login_register_model.dart';
+import 'package:app/src/utils/auth_firebase.dart';
+import 'package:app/src/utils/functions.dart' as funcUtl;
+import 'package:bot_toast/bot_toast.dart';
 import 'package:app/src/views_pages/login_pages/login_pages.dart';
+import 'package:app/src/blocs/register_bloc.dart';
 import 'package:app/src/views_pages/login_pages/other_widgets.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
 import 'package:app/src/providers/provider.dart';
 import 'package:app/src/views_pages/desing_pages/material_desing_pages.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:app/src/utils/consts_utils.dart' as cons;
 
-class RegisterPage extends StatelessWidget {
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+
+  final RegisterBloc _bloc = RegisterBloc();
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +38,8 @@ class RegisterPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Registrate ahora"),
-        backgroundColor: const Color.fromRGBO(144, 12, 63, 1.0),
+        title: const Text('Registrate ahora'),
+        backgroundColor: cons.constante.colorAppBar,
       ),
       body: Stack(
         children: [other.crearFondo(context), _loginForm(context)],
@@ -113,8 +135,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.nameStreamReg,
         builder: (context, snapshot) {
           return DesingTextField(
-              "example",
-              "Nombre",
+              'example',
+              'Nombre',
               snapshot.error?.toString(),
               FontAwesomeIcons.userCircle,
               validaOk(snapshot),
@@ -133,8 +155,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.lastnameStreamReg,
         builder: (context, snapshot) {
           return DesingTextField(
-              "example",
-              "Apellido",
+              'example',
+              'Apellido',
               snapshot.error?.toString(),
               Icons.person_outline_outlined,
               validaOk(snapshot),
@@ -153,8 +175,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.emailStreamReg,
         builder: (context, snapshot) {
           return DesingTextField(
-              "user@example.com",
-              "Email",
+              'user@example.com',
+              'Email',
               snapshot.error?.toString(),
               FontAwesomeIcons.at,
               validaOk(snapshot),
@@ -173,8 +195,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.fechanacimientoStreamReg,
         builder: (context, snapshot) {
           return DesingDatepicker(
-            "Fecha de nacimiento",
-            "Fecha de nacimiento",
+            'Fecha de nacimiento',
+            'Fecha de nacimiento',
             Icons.date_range_outlined,
             validaOk(snapshot),
             Colors.white,
@@ -192,8 +214,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.repeatpasswordStreamReg,
         builder: (context, snapshot) {
           return DesingTextField(
-              "*******",
-              "Repetir Contrasena",
+              '*******',
+              'Repetir Contrasena',
               snapshot.error?.toString(),
               Icons.password_sharp,
               validaOk(snapshot),
@@ -212,8 +234,8 @@ class RegisterPage extends StatelessWidget {
         stream: bloc.passwordStreamReg,
         builder: (context, snapshot) {
           return DesingTextField(
-              "*******",
-              "Contrasena",
+              '*******',
+              'Contrasena',
               snapshot.error?.toString(),
               Icons.admin_panel_settings_rounded,
               validaOk(snapshot),
@@ -231,14 +253,75 @@ class RegisterPage extends StatelessWidget {
     return StreamBuilder(
         stream: bloc.submitValidReg,
         builder: (context, snapshot) {
-          return DesingButtonElevation(() => __botonRegistrar(context,bloc),
-              "Registrar", 'Comfortaa-Bold', 20.0, 10.0);
+          return DesingButtonElevation(
+            snapshot.hasData ? () => __botonRegistrar(context, bloc, log) : null,
+              'Registrar', 'Comfortaa-Bold', 20.0, 10.0);
         });
   }
 
-  __botonRegistrar(BuildContext context, RegisterBloc bloc) {
-    Future<Map<String, dynamic>> datos = bloc.newUserFirebase('juang@gmail.com', 'juapa1234*');
-    datos.then((value) => print(value['mensaje']));
-    //print(utl.FuncionesUtils().selectDateNow(context));
+  __botonRegistrar(BuildContext context, RegisterBloc bloc, LoginCRUD createUser) async {
+    String fechaToday = funcUtl.FuncionesUtils().selectDateNow(context);
+    final buscaDocumento = await firestore.collection('users').doc(bloc.getEmailBlocReg).get();
+
+    if (bloc.getPasswordBlocReg == bloc.getRepeatPassBlocReg) {
+
+    // Se autentica usuario en firebase authentication
+    //loginFirebase(bloc.getEmailBlocReg, bloc.getPasswordBlocReg);
+
+    // Modelo de datos para insertar usuario en firebase
+    final user = LoginRegisterModel(
+      nombre          : bloc.getNameBlocReg,
+      apellido        : bloc.getLastNameBlocReg,
+      email           : bloc.getEmailBlocReg,
+      password        : bloc.getPasswordBlocReg,
+      fechaNacimiento : bloc.getFechaNacimientoBlocReg,
+      genero          : bloc.getGenderBlocReg,
+      pais            : bloc.getCountryBlocReg,
+      fechaCreacion   : fechaToday,
+      fechaModificacion : fechaToday,
+      fechaInactivacion : '99/99/9999',
+      estado            : 'A',
+    );
+
+    if (!buscaDocumento.exists) {
+      await firestore.collection('users').doc(bloc.getEmailBlocReg).set({
+        'usu_id': '1',
+        'usu_nombre': bloc.getLastNameBlocReg,
+        'usu_apellido': bloc.getEmailBlocReg,
+        'usu_email': bloc.getEmailBlocReg,
+        'usu_password': bloc.getPasswordBlocReg,
+        'usu_fechaNacimiento': bloc.getFechaNacimientoBlocReg,
+        'usu_genero': bloc.getGenderBlocReg,
+        'usu_pais': bloc.getCountryBlocReg,
+        'usu_fechaCreacion': fechaToday,
+        'usu_fechaModificacion': fechaToday,
+        'usu_fechaInactivacion': '99/99/9999',
+        'usu_estado': 'A',
+    })
+    .then((value) {
+      funcUtl.FuncionesUtils().showNotifyLoading((){
+
+        // Validacion si se esta registardo por Google para agregar las credenciales
+        //loginFirebase(bloc.getEmailBlocReg, bloc.getPasswordBlocReg);
+        BotToast.showText(text: 'Usuario creado con exito');
+        
+        });
+    })
+    .catchError((error) {
+      funcUtl.FuncionesUtils().showNotifyLoading((){
+        BotToast.showText(text: 'Se presento un error al crear usuario');
+        });
+    });
+    }else{
+      BotToast.showText(text: 'El correo ya se encuentra registrado');
+    }
+    
+    // Se guarda el usuario en sqflite 
+    //createUser.insertUser(user);
+    
+    }else{
+      BotToast.showText(text: 'Las contrasenas no coinciden');
+    }
+    
   }
 }

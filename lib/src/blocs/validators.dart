@@ -49,4 +49,25 @@ minusculas, numeros y caracter''');
     }
   });
 
+  var validaCountry=StreamTransformer<String,String>.fromHandlers(
+    handleData: (String country,EventSink<String> sink)
+    {
+    if(country.isNotEmpty){
+      sink.add(country);
+    }else{
+      sink.add('Seleccionar pais');
+    }
+  });
+
+  var validaGender=StreamTransformer<String,String>.fromHandlers(
+    handleData: (String gender,EventSink<String> sink)
+    {
+    String valor = gender.substring(17);
+    if(gender.isNotEmpty){
+      sink.add(valor);
+    }else{
+      sink.add('masculino');
+    }
+  });
+
 }

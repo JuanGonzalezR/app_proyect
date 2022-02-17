@@ -1,7 +1,12 @@
+import 'dart:async';
+
+import 'package:app/src/blocs/register_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:app/src/utils/auth_firebase.dart';
+import 'package:app/src/utils/functions.dart';
 import 'package:app/src/utils/pref_users.dart';
 import 'package:app/src/views_pages/login_pages/register_page.dart';
-import 'package:flutter/material.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
 import 'package:app/src/providers/provider.dart';
 import 'package:app/src/views_pages/desing_pages/material_desing_pages.dart';
@@ -16,8 +21,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final LoginBloc _bloc = LoginBloc();
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final blocLogin = Provider.ofLoginBloc(context);
     return Scaffold(
       body: Stack(
         children: [_crearFondo(context), _loginForm(context)],
@@ -58,7 +72,6 @@ Widget _crearFondo(BuildContext context) {
       Positioned(top: 150.0, right: 10.0, child: circulo),
       Positioned(bottom: 120.0, right: 20.0, child: circulo),
       Positioned(bottom: -50.0, left: -20.0, child: circulo),
-      
       Container(
         padding: const EdgeInsets.only(top: 80.0),
         child: Column(
@@ -70,7 +83,10 @@ Widget _crearFondo(BuildContext context) {
             ),
             Text(
               "Iniciar Sesion",
-              style: TextStyle(color: Colors.white, fontSize: 25.0, fontFamily: 'Comfortaa-Bold'),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: 'Comfortaa-Bold'),
             )
           ],
         ),
@@ -82,6 +98,7 @@ Widget _crearFondo(BuildContext context) {
 Widget _loginForm(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final blocLogin = Provider.ofLoginBloc(context);
+  final fc = FuncionesUtils();
   //final _prefs = PreferenciasUsuario();
   final log = LoginCRUD();
 
@@ -122,7 +139,7 @@ Widget _loginForm(BuildContext context) {
                 const SizedBox(
                   height: 20.0,
                 ),
-                _crearBoton(blocLogin, context, log),
+                _crearBoton(blocLogin, context, log, fc),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -211,11 +228,13 @@ Widget validaOk(AsyncSnapshot snaps) {
   }
 }
 
-Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
+Widget _crearBoton(
+    LoginBloc bloc, BuildContext context, LoginCRUD log, FuncionesUtils fc) {
   return StreamBuilder(
       stream: bloc.submitValid,
       builder: (context, snapshot) {
-        return DesingButtonElevation(snapshot.hasData ? ()=> _botonLogin(bloc) : null,
+        return DesingButtonElevation(
+            snapshot.hasData ? () => _botonLogin(context, bloc, fc) : null,
             "Ingresar",
             'Comfortaa-Bold',
             20.0,
@@ -223,44 +242,30 @@ Widget _crearBoton(LoginBloc bloc, BuildContext context, LoginCRUD log) {
       });
 }
 
-Future _botonLogin(LoginBloc bloc) async {
-
+Future _botonLogin(
+    BuildContext context, LoginBloc bloc, FuncionesUtils fc) async {
   final _pref = PreferenciasUsuario();
 
   if (bloc.getEmailBlog.isNotEmpty && bloc.getPasswordBlog.isNotEmpty) {
-    await loginFirebase(bloc.getEmailBlog,bloc.getPasswordBlog).then((value){
-    if (value['ok'] == true) {
-    _pref.token = value['token'];
-    }else{
-      print(value['mensaje']);
-    }
-    }
-  );
+    await loginFirebase(bloc.getEmailBlog, bloc.getPasswordBlog).then((value) {
+      if (value['ok'] == true) {
+        _pref.token = value['token'];
+        fc.showNotifyLoading(() {
+          Timer.run(() {
+            Navigator.pushReplacementNamed(context, 'home');
+          });
+        });
+      } else {
+        fc.showNotifyLoading(
+            () => BotToast.showText(text: "Usuario o contrasena incorrecta"));
+        //print(value['mensaje']);
+      }
+    });
   }
-  
-  /*final _prefs = PreferenciasUsuario();
-  Future<Map<String, dynamic>> datos= bloc.loginFirebase('juang@gmail.com', 'juapa1234*');
-  datos.then((value) => 
-  _prefs.token = value['token']
-  );
-
-  Navigator.pushReplacementNamed(context, 'home');
-  final user = LoginRegisterModel(
-      nombre          : 'Juan',
-      apellido        : 'Gonzalez',
-      email           : 'jp@gmail.com',
-      password        : 'assasasas',
-      fechaNacimiento : '12/12/2022',
-      genero          : 'Masculino',
-      pais            : 'Colombia',
-      fechaCreacion   : '12/12/2022',
-      fechaModificacion : '12/12/2022',
-      fechaInactivacion : '12/12/2022',
-      estado            : 'A',
-    );*/
 }
 
-Widget _crearBotonGoogle(LoginBloc blocLogin, BuildContext context, LoginCRUD log) {
+Widget _crearBotonGoogle(
+    LoginBloc blocLogin, BuildContext context, LoginCRUD log) {
   return SizedBox(
     width: double.infinity,
     child: SignInButton(

@@ -28,7 +28,7 @@ class _DesingButtonOutlineState extends State<DesingButtonOutline> {
     return OutlinedButton(
       onPressed: widget.onPress,
       style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(constante.colorSecundario),
+          backgroundColor: MaterialStateProperty.all(constante.colorSecundario),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
@@ -38,9 +38,16 @@ class _DesingButtonOutlineState extends State<DesingButtonOutline> {
         children: [
           Text(widget.texto,
               style: TextStyle(
-                  fontFamily: widget.font, fontSize: 17.0, color: Colors.white)),
-          const SizedBox(width: 10,),
-          const FaIcon(FontAwesomeIcons.angleDoubleRight,color: Colors.white,)
+                  fontFamily: widget.font,
+                  fontSize: 17.0,
+                  color: Colors.white)),
+          const SizedBox(
+            width: 10,
+          ),
+          const FaIcon(
+            FontAwesomeIcons.angleDoubleRight,
+            color: Colors.white,
+          )
         ],
       ),
     );
@@ -244,7 +251,8 @@ class DesingDropdown extends StatefulWidget {
 class _DesingDropdownState extends State<DesingDropdown> {
   @override
   Widget build(BuildContext context) {
-    return _crearDropdown();
+    final blocR = Provider.ofRegisterBloc(context);
+    return _crearDropdown(blocR);
   }
 
   List<DropdownMenuItem<Object>>? _getOpcionesDropdown() {
@@ -259,36 +267,40 @@ class _DesingDropdownState extends State<DesingDropdown> {
     return lista;
   }
 
-  Widget _crearDropdown() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          CircleAvatar(
-              backgroundColor: constante.colorPrincipal,
-              child: const Icon(
-                Icons.person_pin_circle,
-                color: Colors.white,
-              )),
-          const SizedBox(
-            width: 22.0,
+  Widget _crearDropdown(RegisterBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.countryStreamReg,
+      builder: (context, snapshot) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              CircleAvatar(
+                  backgroundColor: constante.colorPrincipal,
+                  child: const Icon(
+                    Icons.person_pin_circle,
+                    color: Colors.white,
+                  )),
+              const SizedBox(
+                width: 22.0,
+              ),
+              DropdownButton(
+                  items: _getOpcionesDropdown(),
+                  value: _opcionSeleccionada,
+                  style: const TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.black54,
+                      fontFamily: 'Comfortaa-Light'),
+                  focusColor: Colors.deepPurple[200],
+                  onChanged: (v) {
+                    bloc.changeCountryReg(v.toString());
+                    _opcionSeleccionada = bloc.getCountryBlocReg;
+                    //print(bloc.getCountryBlocReg);
+                  }),
+            ],
           ),
-          DropdownButton(
-              items: _getOpcionesDropdown(),
-              value: _opcionSeleccionada,
-              style: const TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.black54,
-                  fontFamily: 'Comfortaa-Light'),
-              focusColor: Colors.deepPurple[200],
-              onChanged: (opt) {
-                setState(() {
-                  _opcionSeleccionada = opt.toString();
-                  //print(_opcionSeleccionada);
-                });
-              }),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -358,14 +370,15 @@ class RecordarPassState extends State<RecordarPass> {
             checkColor: Colors.white,
             fillColor: MaterialStateProperty.resolveWith(getColor),
             overlayColor: MaterialStateProperty.resolveWith(getColor),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             value: pref.rememberUser,
             onChanged: (bool? value) {
               setState(() {
                 _addPrefs(value);
                 isChecked = value!;
 
-                print(pref.rememberUser);
+                //print(pref.rememberUser);
               });
             },
           )
@@ -374,8 +387,8 @@ class RecordarPassState extends State<RecordarPass> {
     );
   }
 
-  void _addPrefs(bool? valor) async{
-    pref.rememberUser = valor! ;
+  void _addPrefs(bool? valor) async {
+    pref.rememberUser = valor!;
   }
 }
 
@@ -393,73 +406,85 @@ class _DesingRadioButtonState extends State<DesingRadioButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Row(
+    final blocR = Provider.ofRegisterBloc(context);
+    return StreamBuilder(
+      stream: blocR.genderStreamReg,
+      builder: (context, snapshot) {
+        return Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-                backgroundColor: constante.colorPrincipal,
-                child: const Icon(
-                  Icons.badge,
-                  color: Colors.white,
-                )),
-            const SizedBox(
-              width: 22.0,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                    backgroundColor: constante.colorPrincipal,
+                    child: const Icon(
+                      Icons.badge,
+                      color: Colors.white,
+                    )),
+                const SizedBox(
+                  width: 22.0,
+                ),
+                const Text(
+                  'Genero',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.black54,
+                      fontFamily: 'Comfortaa-Light'),
+                ),
+              ],
             ),
-            const Text(
-              'Genero',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.black54,
-                  fontFamily: 'Comfortaa-Light'),
+            const SizedBox(
+              height: 10.0,
+            ),
+            ListTile(
+              title: const Text('Masculino'),
+              trailing: const Icon(Icons.male),
+              leading: Radio<SingingCharacter>(
+                value: SingingCharacter.masculino,
+                groupValue: _character,
+                onChanged: (SingingCharacter? value) {
+                  setState(() {
+                    blocR.changeGenderReg(value.toString().substring(17));
+                    _character = value;
+                    print(blocR.getGenderBlocReg);
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Femenino'),
+              trailing: const Icon(Icons.female),
+              leading: Radio<SingingCharacter>(
+                value: SingingCharacter.femenino,
+                groupValue: _character,
+                onChanged: (SingingCharacter? value) {
+                  setState(() {
+                    blocR.changeGenderReg(value.toString().substring(17));
+                    _character = value;
+                    print(blocR.getGenderBlocReg);
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text('Otros'),
+              trailing: const Icon(Icons.people_outline_sharp),
+              leading: Radio<SingingCharacter>(
+                value: SingingCharacter.otros,
+                groupValue: _character,
+                onChanged: (SingingCharacter? value) {
+                  setState(() {
+                    blocR.changeGenderReg(value.toString().substring(17));
+                    _character = value;
+                    print(blocR.getGenderBlocReg);
+                  });
+                },
+              ),
             ),
           ],
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        ListTile(
-          title: const Text('Masculino'),
-          trailing: const Icon(Icons.male),
-          leading: Radio<SingingCharacter>(
-            value: SingingCharacter.masculino,
-            groupValue: _character,
-            onChanged: (SingingCharacter? value) {
-              setState(() {
-                _character = value;
-              });
-            },
-          ),
-        ),
-        ListTile(
-          title: const Text('Femenino'),
-          trailing: const Icon(Icons.female),
-          leading: Radio<SingingCharacter>(
-            value: SingingCharacter.femenino,
-            groupValue: _character,
-            onChanged: (SingingCharacter? value) {
-              setState(() {
-                _character = value;
-              });
-            },
-          ),
-        ),
-        ListTile(
-          title: const Text('Otros'),
-          trailing: const Icon(Icons.people_outline_sharp),
-          leading: Radio<SingingCharacter>(
-            value: SingingCharacter.otros,
-            groupValue: _character,
-            onChanged: (SingingCharacter? value) {
-              setState(() {
-                _character = value;
-              });
-            },
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

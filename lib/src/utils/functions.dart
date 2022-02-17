@@ -1,6 +1,16 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 
 class FuncionesUtils {
+  int backgroundColor = 0x42000000;
+  int seconds = 2;
+  bool clickClose = true;
+  bool allowClick = true;
+  bool crossPage = true;
+  int animationMilliseconds = 200;
+  int animationReverseMilliseconds = 200;
+  BackButtonBehavior backButtonBehavior = BackButtonBehavior.none;
+
   Widget validaOk(AsyncSnapshot snaps) {
     if (snaps.hasError) {
       return const Padding(
@@ -60,13 +70,29 @@ class FuncionesUtils {
 
     DateTime date = DateTime.now();
     month = date.month.toString();
-    day   = date.day.toString();
+    day = date.day.toString();
 
-    if (month.length == 1) month = '0$month' ;
-    if (day.length == 1) day = '0$day' ;
+    if (month.length == 1) month = '0$month';
+    if (day.length == 1) day = '0$day';
 
     fecha = '$day/$month/${date.year.toString()}';
 
     return fecha;
+  }
+
+  showNotifyLoading (Function()? functionClose) {
+  return BotToast.showLoading(
+        clickClose: clickClose,
+        allowClick: allowClick,
+        crossPage: crossPage,
+        backButtonBehavior: backButtonBehavior,
+        animationDuration: Duration(milliseconds: animationMilliseconds),
+        animationReverseDuration:
+            Duration(milliseconds: animationReverseMilliseconds),
+        duration: Duration(
+          seconds: seconds,
+        ),
+        backgroundColor: Color(backgroundColor),
+        onClose: functionClose);
   }
 }

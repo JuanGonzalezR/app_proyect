@@ -41,7 +41,7 @@ Future<UserCredential> signInWithGoogle() async {
 
       if (decodeResp.containsKey('idToken')) {
 
-        //Se guarda el token en las preferencias para iniciar hasta el home
+        //Se guarda el token en las preferencias para iniciar hasta el
         //_prefs.token = decodeResp['idToken'];
 
         return {'ok':true,'token':decodeResp['idToken']};
