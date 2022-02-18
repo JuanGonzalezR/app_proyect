@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:app/src/utils/functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/src/models/login_register_model.dart';
 import 'package:app/src/utils/auth_firebase.dart';
-import 'package:app/src/utils/functions.dart' as funcUtl;
 import 'package:bot_toast/bot_toast.dart';
-import 'package:app/src/views_pages/login_pages/login_pages.dart';
 import 'package:app/src/blocs/register_bloc.dart';
 import 'package:app/src/views_pages/login_pages/other_widgets.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
@@ -23,7 +24,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   final RegisterBloc _bloc = RegisterBloc();
 
   @override
@@ -139,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Nombre',
               snapshot.error?.toString(),
               FontAwesomeIcons.userCircle,
-              validaOk(snapshot),
+              ValidaEstadoBloc(snaps: snapshot),
               Colors.white,
               Colors.blueAccent,
               bloc.changeNameReg,
@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Apellido',
               snapshot.error?.toString(),
               Icons.person_outline_outlined,
-              validaOk(snapshot),
+              ValidaEstadoBloc(snaps: snapshot),
               Colors.white,
               Colors.blueAccent,
               bloc.changeLastNameReg,
@@ -179,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Email',
               snapshot.error?.toString(),
               FontAwesomeIcons.at,
-              validaOk(snapshot),
+              ValidaEstadoBloc(snaps: snapshot),
               Colors.white,
               Colors.blueAccent,
               bloc.changeEmailReg,
@@ -198,7 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
             'Fecha de nacimiento',
             'Fecha de nacimiento',
             Icons.date_range_outlined,
-            validaOk(snapshot),
+            ValidaEstadoBloc(snaps: snapshot),
             Colors.white,
             Colors.blueAccent,
             bloc.changeFechaNacimientoReg,
@@ -215,10 +215,10 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context, snapshot) {
           return DesingTextField(
               '*******',
-              'Repetir Contrasena',
+              'Repetir Contrase\u00F1a',
               snapshot.error?.toString(),
               Icons.password_sharp,
-              validaOk(snapshot),
+              ValidaEstadoBloc(snaps: snapshot),
               Colors.white,
               Colors.blueAccent,
               bloc.changeRepeatPassReg,
@@ -235,10 +235,10 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context, snapshot) {
           return DesingTextField(
               '*******',
-              'Contrasena',
+              'Contrase\u00F1a',
               snapshot.error?.toString(),
               Icons.admin_panel_settings_rounded,
-              validaOk(snapshot),
+              ValidaEstadoBloc(snaps: snapshot),
               Colors.white,
               Colors.blueAccent,
               bloc.changePasswordReg,
@@ -254,74 +254,85 @@ class _RegisterPageState extends State<RegisterPage> {
         stream: bloc.submitValidReg,
         builder: (context, snapshot) {
           return DesingButtonElevation(
-            snapshot.hasData ? () => __botonRegistrar(context, bloc, log) : null,
-              'Registrar', 'Comfortaa-Bold', 20.0, 10.0);
+              snapshot.hasData
+                  ? () => __botonRegistrar(context, bloc, log)
+                  : null,
+              'Registrar',
+              'Comfortaa-Bold',
+              20.0,
+              10.0);
         });
   }
 
-  __botonRegistrar(BuildContext context, RegisterBloc bloc, LoginCRUD createUser) async {
-    String fechaToday = funcUtl.FuncionesUtils().selectDateNow(context);
-    final buscaDocumento = await firestore.collection('users').doc(bloc.getEmailBlocReg).get();
+  __botonRegistrar(
+      BuildContext context, RegisterBloc bloc, LoginCRUD createUser) async {
+    String fechaToday = FuncionesUtils().selectDateNow(context);
+    final buscaDocumento =
+        await firestore.collection('users').doc(bloc.getEmailBlocReg).get();
 
     if (bloc.getPasswordBlocReg == bloc.getRepeatPassBlocReg) {
+      // Modelo de datos para insertar usuario en firebase
+      final user = LoginRegisterModel(
+        nombre: bloc.getNameBlocReg,
+        apellido: bloc.getLastNameBlocReg,
+        email: bloc.getEmailBlocReg,
+        password: bloc.getPasswordBlocReg,
+        fechaNacimiento: bloc.getFechaNacimientoBlocReg,
+        genero: bloc.getGenderBlocReg,
+        pais: bloc.getCountryBlocReg,
+        fechaCreacion: fechaToday,
+        fechaModificacion: fechaToday,
+        fechaInactivacion: '99/99/9999',
+        estado: 'A',
+      );
 
-    // Se autentica usuario en firebase authentication
-    //loginFirebase(bloc.getEmailBlocReg, bloc.getPasswordBlocReg);
+      if (!buscaDocumento.exists) {
+        await firestore.collection('users').doc(bloc.getEmailBlocReg).set({
+          'usu_id': '1',
+          'usu_nombre': bloc.getLastNameBlocReg,
+          'usu_apellido': bloc.getEmailBlocReg,
+          'usu_email': bloc.getEmailBlocReg,
+          'usu_password': bloc.getPasswordBlocReg,
+          'usu_fechaNacimiento': bloc.getFechaNacimientoBlocReg,
+          'usu_genero': bloc.getGenderBlocReg,
+          'usu_pais': bloc.getCountryBlocReg,
+          'usu_fechaCreacion': fechaToday,
+          'usu_fechaModificacion': fechaToday,
+          'usu_fechaInactivacion': '99/99/9999',
+          'usu_estado': 'A',
+        }).then((_) {
+          FuncionesUtils().showNotifyLoading(() async {
+            
+            // Validacion si se esta registardo por Google para agregar las credenciales
+            await createUserWithEmailAndPassword(
+                    bloc.getEmailBlocReg, bloc.getPasswordBlocReg)
+                .then((value) =>
+                    print('CreateUserFirebaseOk ' + value.toString()))
+                .catchError((error) =>
+                    print('CreateUserFirebaseError ' + error.toString()));
 
-    // Modelo de datos para insertar usuario en firebase
-    final user = LoginRegisterModel(
-      nombre          : bloc.getNameBlocReg,
-      apellido        : bloc.getLastNameBlocReg,
-      email           : bloc.getEmailBlocReg,
-      password        : bloc.getPasswordBlocReg,
-      fechaNacimiento : bloc.getFechaNacimientoBlocReg,
-      genero          : bloc.getGenderBlocReg,
-      pais            : bloc.getCountryBlocReg,
-      fechaCreacion   : fechaToday,
-      fechaModificacion : fechaToday,
-      fechaInactivacion : '99/99/9999',
-      estado            : 'A',
-    );
+            // Se guarda el usuario en sqflite
+            await createUser
+                .insertUser(user)
+                .then((value) => print('CreateUserSqfliteOk'))
+                .catchError((error) =>
+                    print('CreateUserSqfliteError ' + error.toString()));
 
-    if (!buscaDocumento.exists) {
-      await firestore.collection('users').doc(bloc.getEmailBlocReg).set({
-        'usu_id': '1',
-        'usu_nombre': bloc.getLastNameBlocReg,
-        'usu_apellido': bloc.getEmailBlocReg,
-        'usu_email': bloc.getEmailBlocReg,
-        'usu_password': bloc.getPasswordBlocReg,
-        'usu_fechaNacimiento': bloc.getFechaNacimientoBlocReg,
-        'usu_genero': bloc.getGenderBlocReg,
-        'usu_pais': bloc.getCountryBlocReg,
-        'usu_fechaCreacion': fechaToday,
-        'usu_fechaModificacion': fechaToday,
-        'usu_fechaInactivacion': '99/99/9999',
-        'usu_estado': 'A',
-    })
-    .then((value) {
-      funcUtl.FuncionesUtils().showNotifyLoading((){
 
-        // Validacion si se esta registardo por Google para agregar las credenciales
-        //loginFirebase(bloc.getEmailBlocReg, bloc.getPasswordBlocReg);
-        BotToast.showText(text: 'Usuario creado con exito');
-        
+            BotToast.showText(text: 'Usuario creado con exito');
+
+            Navigator.pop(context);
+          });
+        }).catchError((error) {
+          FuncionesUtils().showNotifyLoading(() {
+            BotToast.showText(text: 'Se presento un error al crear usuario');
+          });
         });
-    })
-    .catchError((error) {
-      funcUtl.FuncionesUtils().showNotifyLoading((){
-        BotToast.showText(text: 'Se presento un error al crear usuario');
-        });
-    });
-    }else{
-      BotToast.showText(text: 'El correo ya se encuentra registrado');
+      } else {
+        BotToast.showText(text: 'El correo ya se encuentra registrado');
+      }
+    } else {
+      BotToast.showText(text: 'Las contrase\u00F1as no coinciden');
     }
-    
-    // Se guarda el usuario en sqflite 
-    //createUser.insertUser(user);
-    
-    }else{
-      BotToast.showText(text: 'Las contrasenas no coinciden');
-    }
-    
   }
 }

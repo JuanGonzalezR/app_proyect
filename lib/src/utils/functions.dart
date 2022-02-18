@@ -11,28 +11,6 @@ class FuncionesUtils {
   int animationReverseMilliseconds = 200;
   BackButtonBehavior backButtonBehavior = BackButtonBehavior.none;
 
-  Widget validaOk(AsyncSnapshot snaps) {
-    if (snaps.hasError) {
-      return const Padding(
-        padding: EdgeInsetsDirectional.only(end: 12.0),
-        child: Icon(Icons.report_problem_rounded,
-            color: Colors.redAccent), // myIcon is a 48px-wide widget.
-      );
-    } else if (snaps.hasData) {
-      return Padding(
-        padding: const EdgeInsetsDirectional.only(end: 12.0),
-        child: Icon(Icons.check,
-            color: Colors.green[700]), // myIcon is a 48px-wide widget.
-      );
-    } else {
-      return const Padding(
-        padding: EdgeInsetsDirectional.only(end: 12.0),
-        child:
-            Icon(Icons.remove_circle_outlined), // myIcon is a 48px-wide widget.
-      );
-    }
-  }
-
   Future<void> showMyDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -95,4 +73,5 @@ class FuncionesUtils {
         backgroundColor: Color(backgroundColor),
         onClose: functionClose);
   }
+
 }

@@ -48,6 +48,7 @@ dependencies:
   flutter_signin_button: ^2.0.0
   bot_toast:
   cloud_firestore: ^3.1.8
+  mailer: ^5.1.0
 
 dev_dependencies:
   flutter_test:

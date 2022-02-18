@@ -1,4 +1,6 @@
+import 'package:app/src/views_pages/login_pages/forgot_pass.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/src/views_pages/home_pages/home_pages.dart';
@@ -14,6 +16,7 @@ void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  //await FirebaseAuth.instance.setPersistence(Persistence.);
   final prefs = PreferenciasUsuario();
   String routeInit = 'login';
   await prefs.initPrefs();
@@ -41,6 +44,7 @@ void main() async{
       'login': (BuildContext context) => const LoginPage(),
       'home': (BuildContext context) => const HomePage(),
       'register': (BuildContext context) => const RegisterPage(),
+      'forgotPass': (BuildContext context) => const ForgotPassword(),
     },
   )));
 }

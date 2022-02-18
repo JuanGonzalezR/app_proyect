@@ -22,7 +22,7 @@ class Validators{
     if(regExp.hasMatch(password)){
       sink.add(password);
     }else{
-      sink.addError('Contrasena incorrecta');
+      sink.addError('Contrase\u00F1a incorrecta');
     }
   });
 

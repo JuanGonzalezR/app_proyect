@@ -392,6 +392,149 @@ class RecordarPassState extends State<RecordarPass> {
   }
 }
 
+Widget crearFondo(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  final fondoMorado = Container(
+    height: size.height * 0.5,
+    width: double.infinity,
+    decoration: const BoxDecoration(
+        gradient: LinearGradient(colors: <Color>[
+      Color.fromRGBO(144, 12, 63, 1.0),
+      Color.fromRGBO(239, 154, 154, 1.0),
+    ])),
+  );
+
+  final circulo = Container(
+    width: 100.0,
+    height: 100.0,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100.0),
+        color: const Color.fromRGBO(255, 255, 255, 0.05)),
+  );
+
+  return Stack(
+    children: <Widget>[
+      fondoMorado,
+      Positioned(top: 90.0, left: 30.0, child: circulo),
+      Positioned(top: -40.0, right: -30.0, child: circulo),
+      Positioned(bottom: -50.0, right: -10.0, child: circulo),
+      Positioned(top: 90.0, left: 30.0, child: circulo),
+      Positioned(top: -40.0, right: -30.0, child: circulo),
+      Positioned(bottom: -50.0, right: -10.0, child: circulo),
+      Positioned(top: 150.0, right: 10.0, child: circulo),
+      Positioned(bottom: 120.0, right: 20.0, child: circulo),
+      Positioned(bottom: -50.0, left: -20.0, child: circulo),
+      Container(
+        padding: const EdgeInsets.only(top: 80.0),
+        child: Column(
+          children: const [
+            Icon(Icons.person_pin_circle, color: Colors.white, size: 100.0),
+            SizedBox(
+              height: 10.0,
+              width: double.infinity,
+            ),
+            Text(
+              "Iniciar Sesion",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: 'Comfortaa-Bold'),
+            )
+          ],
+        ),
+      )
+    ],
+  );
+}
+
+Widget crearFondoForgot(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  final fondoMorado = Container(
+    height: size.height * 1,
+    width: double.infinity,
+    decoration: const BoxDecoration(
+        gradient: LinearGradient(colors: <Color>[
+      Color.fromRGBO(144, 12, 63, 1.0),
+      Color.fromRGBO(239, 154, 154, 1.0),
+    ])),
+  );
+
+  final circulo = Container(
+    width: 100.0,
+    height: 100.0,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100.0),
+        color: const Color.fromRGBO(255, 255, 255, 0.05)),
+  );
+
+  return Stack(
+    children: <Widget>[
+      fondoMorado,
+      Positioned(top: 90.0, left: 30.0, child: circulo),
+      Positioned(top: -40.0, right: -30.0, child: circulo),
+      Positioned(bottom: -50.0, right: -10.0, child: circulo),
+      Positioned(top: 90.0, left: 30.0, child: circulo),
+      Positioned(top: -40.0, right: -30.0, child: circulo),
+      Positioned(bottom: -50.0, right: -10.0, child: circulo),
+      Positioned(top: 150.0, right: 10.0, child: circulo),
+      Positioned(bottom: 120.0, right: 20.0, child: circulo),
+      Positioned(bottom: -50.0, left: -20.0, child: circulo),
+      Container(
+        padding: const EdgeInsets.only(top: 110.0),
+        child: Column(
+          children: const [
+             FaIcon(FontAwesomeIcons.userLock, color: Colors.white, size: 80.0),
+             SizedBox(
+              height: 10.0,
+              width: double.infinity,
+            ),
+            Text(
+              "  Consigue una nueva \n         contrase\u00F1a",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: 'Comfortaa-Bold'),
+            )
+          ],
+        ),
+      )
+    ],
+  );
+}
+
+class ValidaEstadoBloc extends StatelessWidget {
+  const ValidaEstadoBloc({
+    Key? key,
+    required this.snaps,
+  }) : super(key: key);
+
+  final AsyncSnapshot snaps;
+
+  @override
+  Widget build(BuildContext context) {
+    if (snaps.hasError) {
+      return const Padding(
+        padding: EdgeInsetsDirectional.only(end: 12.0),
+        child: Icon(Icons.report_problem_rounded,
+            color: Colors.redAccent), // myIcon is a 48px-wide widget.
+      );
+    } else if (snaps.hasData) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(end: 12.0),
+        child: Icon(Icons.check,
+            color: Colors.green[700]), // myIcon is a 48px-wide widget.
+      );
+    } else {
+      return const Padding(
+        padding: EdgeInsetsDirectional.only(end: 12.0),
+        child:
+            Icon(Icons.remove_circle_outlined), // myIcon is a 48px-wide widget.
+      );
+    }
+  }
+}
+
+
 enum SingingCharacter { masculino, femenino, otros }
 
 class DesingRadioButton extends StatefulWidget {

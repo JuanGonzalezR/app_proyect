@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:app/src/blocs/register_bloc.dart';
+import 'package:app/src/views_pages/login_pages/forgot_pass.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/utils/auth_firebase.dart';
 import 'package:app/src/utils/functions.dart';
@@ -31,68 +30,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final blocLogin = Provider.ofLoginBloc(context);
     return Scaffold(
       body: Stack(
-        children: [_crearFondo(context), _loginForm(context)],
+        children: [crearFondo(context), _loginForm(context)],
       ),
     );
   }
-}
-
-Widget _crearFondo(BuildContext context) {
-  final size = MediaQuery.of(context).size;
-  final fondoMorado = Container(
-    height: size.height * 0.5,
-    width: double.infinity,
-    decoration: const BoxDecoration(
-        gradient: LinearGradient(colors: <Color>[
-      Color.fromRGBO(144, 12, 63, 1.0),
-      Color.fromRGBO(239, 154, 154, 1.0),
-    ])),
-  );
-
-  final circulo = Container(
-    width: 100.0,
-    height: 100.0,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100.0),
-        color: const Color.fromRGBO(255, 255, 255, 0.05)),
-  );
-
-  return Stack(
-    children: <Widget>[
-      fondoMorado,
-      Positioned(top: 90.0, left: 30.0, child: circulo),
-      Positioned(top: -40.0, right: -30.0, child: circulo),
-      Positioned(bottom: -50.0, right: -10.0, child: circulo),
-      Positioned(top: 90.0, left: 30.0, child: circulo),
-      Positioned(top: -40.0, right: -30.0, child: circulo),
-      Positioned(bottom: -50.0, right: -10.0, child: circulo),
-      Positioned(top: 150.0, right: 10.0, child: circulo),
-      Positioned(bottom: 120.0, right: 20.0, child: circulo),
-      Positioned(bottom: -50.0, left: -20.0, child: circulo),
-      Container(
-        padding: const EdgeInsets.only(top: 80.0),
-        child: Column(
-          children: const [
-            Icon(Icons.person_pin_circle, color: Colors.white, size: 100.0),
-            SizedBox(
-              height: 10.0,
-              width: double.infinity,
-            ),
-            Text(
-              "Iniciar Sesion",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontFamily: 'Comfortaa-Bold'),
-            )
-          ],
-        ),
-      )
-    ],
-  );
 }
 
 Widget _loginForm(BuildContext context) {
@@ -159,7 +102,14 @@ Widget _loginForm(BuildContext context) {
                   height: 10.0,
                 ),
                 DesingTextButton(
-                    'olvidaste la contrasena ?', 'Comfortaa-Light', () {}),
+                    'olvidaste la contrase\u00F1a ?', 'Comfortaa-Light', () {
+                      Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const ForgotPassword(),
+                    ),
+                  );
+                    }),
               ],
             ),
           ),
@@ -175,10 +125,10 @@ Widget _crearPassword(LoginBloc bloc) {
       builder: (context, snapshot) {
         return DesingTextField(
             "*******",
-            "Contrasena",
+            "Contrase\u00F1a",
             snapshot.error?.toString(),
             Icons.password_sharp,
-            validaOk(snapshot),
+            ValidaEstadoBloc(snaps: snapshot),
             Colors.white,
             Colors.blueAccent,
             bloc.changePassword,
@@ -198,7 +148,7 @@ Widget _crearEmail(LoginBloc bloc) {
             "Email",
             snapshot.error?.toString(),
             FontAwesomeIcons.at,
-            validaOk(snapshot),
+            ValidaEstadoBloc(snaps: snapshot),
             Colors.white,
             Colors.blueAccent,
             bloc.changeEmail,
@@ -207,25 +157,6 @@ Widget _crearEmail(LoginBloc bloc) {
             'Comfortaa-Light',
             false);
       });
-}
-
-Widget validaOk(AsyncSnapshot snaps) {
-  if (snaps.hasError) {
-    return const Padding(
-      padding: EdgeInsetsDirectional.only(end: 12.0),
-      child: Icon(Icons.report_problem_rounded, color: Colors.redAccent),
-    );
-  } else if (snaps.hasData) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(end: 12.0),
-      child: Icon(Icons.check, color: Colors.green[700]),
-    );
-  } else {
-    return const Padding(
-      padding: EdgeInsetsDirectional.only(end: 12.0),
-      child: Icon(Icons.remove_circle_outlined),
-    );
-  }
 }
 
 Widget _crearBoton(
@@ -246,8 +177,8 @@ Future _botonLogin(
     BuildContext context, LoginBloc bloc, FuncionesUtils fc) async {
   final _pref = PreferenciasUsuario();
 
-  if (bloc.getEmailBlog.isNotEmpty && bloc.getPasswordBlog.isNotEmpty) {
-    await loginFirebase(bloc.getEmailBlog, bloc.getPasswordBlog).then((value) {
+  if (bloc.getEmailBloc.isNotEmpty && bloc.getPasswordBloc.isNotEmpty) {
+    await loginFirebase(bloc.getEmailBloc, bloc.getPasswordBloc).then((value) {
       if (value['ok'] == true) {
         _pref.token = value['token'];
         fc.showNotifyLoading(() {
@@ -257,7 +188,7 @@ Future _botonLogin(
         });
       } else {
         fc.showNotifyLoading(
-            () => BotToast.showText(text: "Usuario o contrasena incorrecta"));
+            () => BotToast.showText(text: "Usuario o contrase\u00F1a incorrecta"));
         //print(value['mensaje']);
       }
     });
