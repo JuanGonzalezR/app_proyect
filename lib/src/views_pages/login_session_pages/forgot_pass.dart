@@ -1,12 +1,14 @@
 import 'package:app/src/blocs/forgot_pass_bloc.dart';
 import 'package:app/src/providers/provider.dart';
-import 'package:app/src/utils/send_email.dart';
-import 'package:app/src/views_pages/desing_pages/material_desing_pages.dart';
+import 'package:app/src/utils/auth_firebase.dart';
+import 'package:app/src/views_pages/desing_pages/desings_login.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/utils/functions.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-String valida = 'SI';
+
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -17,6 +19,8 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final _bloc = ForgotBloc();
+  String valida = 'NO';
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -70,7 +74,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   _crearEmail(blocForgot),
                   const SizedBox(
                     height: 20.0,
-                  ),
+                  ),                  
                   valida == 'SI' ? _crearNewPass(blocForgot) : Container(),
                   const SizedBox(
                     height: 50.0,
@@ -135,7 +139,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Column(
       children: const [
         Text(
-          'A tu correo llegara una nueva contrase\u00F1a, esta la ingresaras en el campo nueva contrase\u00F1a.',
+          'A tu correo llegara una nueva contrase\u00F1a.',
           style: TextStyle(fontSize: 15.0),
         )
       ],
@@ -148,9 +152,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         stream: blocForgot.submitValidForgot,
         builder: (context, snapshot) {
           return DesingButtonElevation(
-              snapshot.hasData
-                  ? () => _botonLogin(context, blocForgot, fc)
-                  : null,
+            () => _botonLogin(context, blocForgot, fc),
               "Enviar",
               'Comfortaa-Bold',
               20.0,
@@ -160,8 +162,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   Widget _crearBotonClose(BuildContext context) {
     return DesingButtonElevation(
-        () => Navigator.pop(context), "Cancelar", 'Comfortaa-Bold', 20.0, 10.0);
+        () => Navigator.pop(context), "Salir", 'Comfortaa-Bold', 20.0, 10.0);
   }
 
-  _botonLogin(BuildContext context, ForgotBloc blocForgot, FuncionesUtils fc) {}
+  _botonLogin(BuildContext context, ForgotBloc blocForgot, FuncionesUtils fc) async {
+
+    if (blocForgot.getEmailFotgotBloc.isNotEmpty) {
+      FuncionesUtils().showNotifyLoading(() async {
+            await changePassword(blocForgot.getEmailFotgotBloc);
+            await auth.currentUser?.reload();
+            valida = 'SI';
+          });
+    }else{
+      BotToast.showText(text: "Ingresa tu correo electronico",duration: const Duration(seconds: 4));
+
+    }
+    
+  }
 }

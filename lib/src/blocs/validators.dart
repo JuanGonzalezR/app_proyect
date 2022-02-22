@@ -49,6 +49,12 @@ minusculas, numeros y caracter''');
     }
   });
 
+  var validaCurrentPage=StreamTransformer<int,int>.fromHandlers(
+    handleData: (int current,EventSink<int> sink)
+    {
+        sink.add(current);            
+  });
+
   var validaCountry=StreamTransformer<String,String>.fromHandlers(
     handleData: (String country,EventSink<String> sink)
     {

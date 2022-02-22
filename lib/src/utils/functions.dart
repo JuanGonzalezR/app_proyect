@@ -7,8 +7,8 @@ class FuncionesUtils {
   bool clickClose = true;
   bool allowClick = true;
   bool crossPage = true;
-  int animationMilliseconds = 200;
-  int animationReverseMilliseconds = 200;
+  int animationMilliseconds = 350;
+  int animationReverseMilliseconds = 350;
   BackButtonBehavior backButtonBehavior = BackButtonBehavior.none;
 
   Future<void> showMyDialog(BuildContext context) async {

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:app/src/utils/other_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/utils/functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,12 +8,11 @@ import 'package:app/src/models/login_register_model.dart';
 import 'package:app/src/utils/auth_firebase.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:app/src/blocs/register_bloc.dart';
-import 'package:app/src/views_pages/login_pages/other_widgets.dart';
 import 'package:app/src/CRUDs/login_crud.dart';
 import 'package:app/src/providers/provider.dart';
-import 'package:app/src/views_pages/desing_pages/material_desing_pages.dart';
+import 'package:app/src/views_pages/desing_pages/desings_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:app/src/utils/consts_utils.dart' as cons;
+import 'package:app/src/utils/consts_utils.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -39,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registrate ahora'),
-        backgroundColor: cons.constante.colorAppBar,
+        backgroundColor: colorAppBar,
       ),
       body: Stack(
         children: [other.crearFondo(context), _loginForm(context)],

@@ -28,7 +28,7 @@ class _DesingButtonOutlineState extends State<DesingButtonOutline> {
     return OutlinedButton(
       onPressed: widget.onPress,
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(constante.colorSecundario),
+          backgroundColor: MaterialStateProperty.all(colorSecundario),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
@@ -80,7 +80,7 @@ class _DesingButtonElevationState extends State<DesingButtonElevation> {
           onPressed: widget.onPress,
           child: Text(widget.title),
           style: ElevatedButton.styleFrom(
-            primary: constante.colorSecundario,
+            primary: colorSecundario,
             textStyle:
                 TextStyle(fontFamily: widget.font, fontSize: widget.tama),
             padding: EdgeInsets.all(widget.padding),
@@ -143,7 +143,7 @@ class _DesingTextFieldState extends State<DesingTextField> {
           errorText: widget.errorText,
           suffixIcon: widget.iconoInterior,
           icon: CircleAvatar(
-            backgroundColor: constante.colorPrincipal,
+            backgroundColor: colorPrincipal,
             child: FaIcon(
               widget.iconoExterior,
               color: widget.colorIcono,
@@ -204,7 +204,7 @@ class _DesingDatePickerState extends State<DesingDatepicker> {
           labelText: widget.label,
           suffixIcon: widget.iconoInterior,
           icon: CircleAvatar(
-            backgroundColor: constante.colorPrincipal,
+            backgroundColor: colorPrincipal,
             child: FaIcon(
               widget.iconoExterior,
               color: widget.colorIcono,
@@ -275,9 +275,9 @@ class _DesingDropdownState extends State<DesingDropdown> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              CircleAvatar(
-                  backgroundColor: constante.colorPrincipal,
-                  child: const Icon(
+              const CircleAvatar(
+                  backgroundColor: colorPrincipal,
+                  child: Icon(
                     Icons.person_pin_circle,
                     color: Colors.white,
                   )),
@@ -361,10 +361,10 @@ class RecordarPassState extends State<RecordarPass> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text(
-            constante.recordarContra,
+          const Text(
+            recordarContra,
             style:
-                const TextStyle(fontFamily: 'Comfortaa-Light', fontSize: 15.0),
+                TextStyle(fontFamily: 'Comfortaa-Light', fontSize: 15.0),
           ),
           Checkbox(
             checkColor: Colors.white,
@@ -428,7 +428,7 @@ Widget crearFondo(BuildContext context) {
         padding: const EdgeInsets.only(top: 80.0),
         child: Column(
           children: const [
-            Icon(Icons.person_pin_circle, color: Colors.white, size: 100.0),
+            FaIcon(FontAwesomeIcons.baseballBall, color: Colors.white, size: 100.0),
             SizedBox(
               height: 10.0,
               width: double.infinity,
@@ -447,6 +447,7 @@ Widget crearFondo(BuildContext context) {
   );
 }
 
+// Crea fondo para el recordar contrasena
 Widget crearFondoForgot(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final fondoMorado = Container(
@@ -534,7 +535,7 @@ class ValidaEstadoBloc extends StatelessWidget {
   }
 }
 
-
+// Radio de seleccion de genero en el registro
 enum SingingCharacter { masculino, femenino, otros }
 
 class DesingRadioButton extends StatefulWidget {
@@ -558,17 +559,17 @@ class _DesingRadioButtonState extends State<DesingRadioButton> {
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 CircleAvatar(
-                    backgroundColor: constante.colorPrincipal,
-                    child: const Icon(
+                    backgroundColor: colorPrincipal,
+                    child: Icon(
                       Icons.badge,
                       color: Colors.white,
                     )),
-                const SizedBox(
+                 SizedBox(
                   width: 22.0,
                 ),
-                const Text(
+                 Text(
                   'Genero',
                   style: TextStyle(
                       fontSize: 20.0,
@@ -590,7 +591,6 @@ class _DesingRadioButtonState extends State<DesingRadioButton> {
                   setState(() {
                     blocR.changeGenderReg(value.toString().substring(17));
                     _character = value;
-                    print(blocR.getGenderBlocReg);
                   });
                 },
               ),
@@ -605,7 +605,6 @@ class _DesingRadioButtonState extends State<DesingRadioButton> {
                   setState(() {
                     blocR.changeGenderReg(value.toString().substring(17));
                     _character = value;
-                    print(blocR.getGenderBlocReg);
                   });
                 },
               ),
@@ -620,7 +619,6 @@ class _DesingRadioButtonState extends State<DesingRadioButton> {
                   setState(() {
                     blocR.changeGenderReg(value.toString().substring(17));
                     _character = value;
-                    print(blocR.getGenderBlocReg);
                   });
                 },
               ),

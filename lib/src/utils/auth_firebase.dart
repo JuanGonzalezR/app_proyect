@@ -1,10 +1,17 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
+import 'package:app/src/utils/functions.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/src/utils/consts_utils.dart';
 import 'dart:convert';
+
+final auth = FirebaseAuth.instance;
 
 Future<UserCredential> signInWithGoogle() async {
   // Trigger the authentication flow
@@ -27,7 +34,13 @@ Future<UserCredential> signInWithGoogle() async {
 createUserWithEmailAndPassword(String email, String password) async {
   try {
     await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((_) async {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    }).catchError((_) {});
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('La contrase\u00F1a proporcionada es demasiado debil.');
@@ -39,24 +52,89 @@ createUserWithEmailAndPassword(String email, String password) async {
   }
 }
 
-signInWithEmailAndPassword(String email, String password) async {
+changePassword (String email)async{
+  auth.sendPasswordResetEmail(email: email)
+  .then((_) {
+    BotToast.showText(text: "Se envio cambio de contrase\u00F1a, favor revisa tu correo",duration: const Duration(seconds: 4));
+  })
+  .catchError((e){
+        BotToast.showText(text: "Error al enviar cambio de contrase\u00F1a, intentalo de nuevo",duration: const Duration(seconds: 4));
+        print("Error 1 "+e.toString());
+  })
+  .onError((error, stackTrace) {
+        BotToast.showText(text: "Error al enviar cambio de contrase\u00F1a, intentalo de nuevo ",duration: const Duration(seconds: 4));
+        print("Error 2 "+error.toString());
+  })
+  ;
+}
+
+signInWithEmailAndPassword(BuildContext context,String email, String password, FuncionesUtils fc) async {
   try {
     await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((_) async {
+
+        await auth.currentUser?.reload();
+        User? user = auth.currentUser;
+
+        //print("User: ${user?.getIdToken()}, check: $user");
+
+        if (user != null && user.emailVerified) {
+          //_pref.token = value['token'];
+          fc.showNotifyLoading(() {
+            Timer.run(() {
+              Navigator.pushReplacementNamed(context, 'home');
+            });
+          });
+        } else {
+            //await user.sendEmailVerification();
+            BotToast.showText(
+              text: "Usuario no verificado, favor revisa tu correo",
+              duration: const Duration(seconds: 4));
+          
+        }
+      
+    });
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      print('No user found for that email.');
+      fc.showNotifyLoading(() =>
+            BotToast.showText(text: "El correo electronico no se encuentra registrado"));
     } else if (e.code == 'wrong-password') {
-      print('Wrong password provided for that user.');
+      fc.showNotifyLoading(() =>
+            BotToast.showText(text: "Usuario o contrase\u00F1a incorrecta"));
     }
   }
 }
 
-sendVerification() async {
+valideChanges(String changesfor) {
   User? user = FirebaseAuth.instance.currentUser;
-
-  if (user != null && !user.emailVerified) {
-    await user.sendEmailVerification();
+  if (changesfor == 'auth') {
+    // Changes in the authentication of user
+    FirebaseAuth.instance.authStateChanges().listen((_) {
+      if (user != null && user.emailVerified) {
+        
+      } else {
+        
+      }
+    });
+  } else if (changesfor == 'token') {
+    // Changes in the token of user
+    FirebaseAuth.instance.idTokenChanges().listen((_) {
+      if (user != null && user.emailVerified) {
+        
+      } else {
+        
+      }
+    });
+  } else {
+    // Changes in the user
+    FirebaseAuth.instance.userChanges().listen((_) {
+      if (user != null && user.emailVerified) {
+        
+      } else {
+        
+      }
+    });
   }
 }
 
@@ -71,7 +149,7 @@ Future<Map<String, dynamic>> loginFirebase(
 
   final resp = await http.post(
       Uri.parse(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${constante.tokenFirebase}'),
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$tokenFirebase'),
       body: json.encode(authData));
 
   Map<String, dynamic> decodeResp = json.decode(resp.body);

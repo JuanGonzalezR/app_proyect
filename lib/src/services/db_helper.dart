@@ -24,7 +24,7 @@ class DBHelper {
 
   void _onCreate(Database db, int version) async{
     await db.execute(
-      util.constante.createTables
+      util.createTables
       );
   }
 }
