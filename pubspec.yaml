@@ -51,6 +51,7 @@ dependencies:
   flutter_screenutil: ^5.3.1
   line_awesome_flutter:
   salomon_bottom_bar: ^3.2.0
+  expansion_card: ^0.1.0
 
 dev_dependencies:
   flutter_test:
