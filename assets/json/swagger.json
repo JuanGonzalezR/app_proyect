@@ -1,0 +1,43 @@
+{
+  "id": "ETH",
+  "currency": "ETH",
+  "symbol": "ETH",
+  "name": "Ethereum",
+  "logo_url": "https://s3.us-east-2.amazonaws.com/nomics-api/static/images/currencies/eth.svg",
+  "status": "active",
+  "platform_currency": "ETH",
+  "price": "3154.11562238",
+  "price_date": "2022-04-05T00:00:00Z",
+  "price_timestamp": "2022-04-05T22:26:00Z",
+  "circulating_supply": "120258939",
+  "market_cap": "379310597636",
+  "market_cap_dominance": "0.1887",
+  "num_exchanges": "466",
+  "num_pairs": "83340",
+  "num_pairs_unmapped": "63207",
+  "first_candle": "2015-08-07T00:00:00Z",
+  "first_trade": "2015-08-07T00:00:00Z",
+  "first_order_book": "2018-08-29T00:00:00Z",
+  "rank": "2",
+  "rank_delta": "0",
+  "high": "4158.48662625",
+  "high_timestamp": "2021-11-08T00:00:00Z",
+  "1d": {
+    "volume": "20189817740.09",
+    "price_change": "-45.37241442",
+    "price_change_pct": "-0.0142",
+    "volume_change": "-2907375200.04",
+    "volume_change_pct": "-0.1259",
+    "market_cap_change": "-5413293113.18",
+    "market_cap_change_pct": "-0.0141"
+  },
+  "30d": {
+    "volume": "571489784051.35",
+    "price_change": "803.15430149",
+    "price_change_pct": "0.3416",
+    "volume_change": "-23533849791.18",
+    "volume_change_pct": "-0.0396",
+    "market_cap_change": "97540671461.94",
+    "market_cap_change_pct": "0.3462"
+  }
+}

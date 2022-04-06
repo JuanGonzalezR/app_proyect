@@ -52,6 +52,7 @@ dependencies:
   line_awesome_flutter:
   salomon_bottom_bar: ^3.2.0
   expansion_card: ^0.1.0
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:

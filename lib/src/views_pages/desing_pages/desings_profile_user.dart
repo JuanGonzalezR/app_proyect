@@ -1,5 +1,7 @@
 import 'package:app/src/providers/provider.dart';
+import 'package:app/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -64,7 +66,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   }
 }
 
-
+// Diseno para los card de las opciones 
 class ExpansionCard extends StatefulWidget {
   
   const ExpansionCard({
@@ -229,6 +231,158 @@ class _ExpansionTileState extends State<ExpansionCard>
       animation: _controller.view,
       builder: _buildChildren,
       child: closed ? null : Column(children: widget.children),
+    );
+  }
+}
+
+// Desing of button in card, loguot.
+class ButtonProfile extends StatelessWidget {
+
+  final Function()? onPressed;
+  final String title;
+  final IconData icon;
+
+  const ButtonProfile({Key? key, required this.onPressed, required this.title, required this.icon}) : super(key: key);
+
+ @override
+ Widget build(BuildContext context) {
+   final responsive = Responsive(context);
+  return OutlinedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(const Color.fromARGB(97, 184, 66, 66)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  side: const BorderSide(color: Color.fromARGB(129, 146, 63, 57))))),
+      child: Row(
+        children: [
+          FaIcon(
+            icon,
+            color: Colors.white,
+          ),
+          SizedBox(width: responsive.wp(2),),
+          Text(title,
+              style: TextStyle(
+                  fontFamily: 'Comfortaa-Light',
+                  fontSize: responsive.dp(2),
+                  color: Colors.white)),
+        ],
+      ),
+    );
+ }
+}
+
+// Circle information
+class CircleInfoUser extends StatelessWidget {
+
+  final String data, text;
+  final IconData icon;
+
+  const CircleInfoUser({Key? key, required this.data, required this.text, required this.icon}) : super(key: key);
+
+ @override
+ Widget build(BuildContext context) {
+   final responsive = Responsive(context);
+  return Stack(
+    children: [
+      Container(
+          width: 200,
+          height: responsive.wp(2.7)  * 9.5,
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(50), bottomLeft: Radius.circular(50) ),
+              gradient: LinearGradient(
+                    colors: <Color>[
+                  Color.fromARGB(255, 104, 0, 40),
+                Color.fromARGB(255, 197, 100, 100),
+                ],
+                    begin: FractionalOffset.centerRight,
+                    end: FractionalOffset.centerLeft)
+              ),
+        ),
+      Container(
+          width: responsive.wp(2.7)  * 9.5,
+          height: responsive.wp(2.7)  * 9.5,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50.0),
+              color: Color.fromARGB(202, 104, 0, 40)
+              ),
+          child: Padding(
+            padding: EdgeInsets.all(responsive.dp(1)),
+            child: Column(
+              children: [
+                Icon(icon,color: Colors.white, size: responsive.dp(2.2),),
+                const Divider(
+                  thickness: 1,
+                  color: Color.fromARGB(28, 255, 255, 255),
+                ),
+                Text(data, style: TextStyle(color: const Color.fromARGB(213, 255, 255, 255), fontSize: responsive.dp(1.5))),
+                const Divider(
+                  thickness: 1,
+                  color: Color.fromARGB(28, 255, 255, 255),
+                ),
+                Text(text, style: TextStyle(color: const Color.fromARGB(213, 255, 255, 255), fontSize: responsive.dp(1.1)))
+              ],
+            ),
+          ),
+        ),
+
+        
+    ],
+  );
+ }
+}
+
+// Desing in screen profile user
+class DesingContainerProfileUser extends StatelessWidget {
+  const DesingContainerProfileUser({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    final responsive = Responsive(context);
+    
+    double x = 0.4;
+    double y = 0.2;
+    double z = 0.4;
+    
+    return Column(
+      children: [
+        Container(
+          transform: Matrix4(
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+          )
+            ..rotateX(x)
+            ..rotateY(y)
+            ..rotateZ(z),
+          height: responsive.height * 0.4,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(100),
+                  topRight: Radius.circular(100)),
+              gradient: LinearGradient(colors: <Color>[
+                Color.fromARGB(255, 104, 0, 40),
+                Color.fromARGB(255, 197, 100, 100),
+              ])),
+        ),
+        SizedBox(height: responsive.hp(15),)
+      ],
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app/src/providers/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:app/src/utils/pref_users.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +20,12 @@ void main() async{
   String routeInit = 'home';
   await prefs.initPrefs();
   //print(prefs.token);
+
+  // Bloquea rotacion del dispositivo
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
 
   runApp(
     Provider(

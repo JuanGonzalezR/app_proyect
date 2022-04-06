@@ -1,5 +1,5 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class FuncionesUtils {
   int backgroundColor = 0x42000000;
@@ -41,7 +41,7 @@ class FuncionesUtils {
     );
   }
 
-  String selectDateNow(BuildContext context) {
+  String selectDateNow() {
     String fecha = '';
     String month;
     String day;

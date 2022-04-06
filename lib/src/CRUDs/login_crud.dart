@@ -45,9 +45,9 @@ class LoginCRUD extends ChangeNotifier{
   }
 
 //Estas funciones se encargan de obtener los usuarios en la base de datos y mostrarlos en una tarjeta
-Future<List<LoginRegisterModel>> loadUsers(int id) async {
+Future<List<LoginRegisterModel>> loadUsers(int i) async {
   final Database? db = await dbase.database;
-  final List<Map<String,dynamic>> maps = await db!.query('user');
+  final List<Map<String,dynamic>> maps = await db!.query('user', where: 'usu_id = ?', whereArgs:[i], limit: 1);
   return List.generate(maps.length, (i){
       return LoginRegisterModel(
         id      : maps[i]['usu_id'],
@@ -61,6 +61,18 @@ Future<List<LoginRegisterModel>> loadUsers(int id) async {
     }
   );
 }
+
+Future<LoginRegisterModel> loadUser(int i) async {
+  final Database? db = await dbase.database;
+  final List<Map<String,dynamic>> maps = await db!.query('user', where: 'usu_id = ?', whereArgs:[i], limit: 1);
+  
+  if (maps.isNotEmpty) {
+    return LoginRegisterModel.fromJson(maps.first);
+  }else{
+    throw Exception("Not found");
+  }
+}
+
 Container buildItem (LoginRegisterModel login){
   return Container(
       height: 150.0,

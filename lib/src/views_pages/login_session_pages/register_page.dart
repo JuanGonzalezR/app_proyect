@@ -266,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   __botonRegistrar(
       BuildContext context, RegisterBloc bloc, LoginCRUD createUser) async {
-    String fechaToday = FuncionesUtils().selectDateNow(context);
+    String fechaToday = FuncionesUtils().selectDateNow();
     final buscaDocumento =
         await firestore.collection('users').doc(bloc.getEmailBlocReg).get();
 
