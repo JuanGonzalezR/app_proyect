@@ -1,6 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:app/src/CRUDs/login_crud.dart';
 import 'package:app/src/models/login_register_model.dart';
-import 'package:app/src/services/db_helper.dart';
 import 'package:app/src/utils/responsive.dart';
 import 'package:app/src/views_pages/desing_pages/desings_profile_user.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,7 @@ class ProfileUser extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.only(top: 1, bottom: 5),
-                    children: [_cardViewInfo(), _cardViewConfig()],
+                    children: [_myInfoUser(), _cardViewConfig()],
                   ),
                 )
               ],
@@ -158,17 +159,20 @@ class ProfileUser extends StatelessWidget {
     );
   }
 
-  Future<Widget> myUser() async {
-    List<LoginRegisterModel> myus = await user.loadUsers(1);
-    Widget usu;
-
-    usu = Column(children: myus.map((e) => user.buildItem(e)).toList());
-    
-
-    return usu;
+  _myInfoUser() {
+    return FutureBuilder(
+      future: user.loadUser(1),
+      builder: (_,AsyncSnapshot<LoginRegisterModel> snapshot){
+        if (snapshot.hasData) {
+          final datos = snapshot.data;
+          return _cardViewInfo(datos!);
+        }
+        return const Center(child: CircularProgressIndicator(strokeWidth: 1,));
+      }
+      );
   }
 
-  Widget _cardViewInfo() {
+  Widget _cardViewInfo(LoginRegisterModel datos) {
     return ExpansionCard(
       title: Container(
         padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -199,23 +203,28 @@ class ProfileUser extends StatelessWidget {
       children: <Widget>[
         Container(
           alignment: Alignment.topLeft,
+          padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.only(right: 55.0, left: 17.0),
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20)),
               color: colorBottonNav),
-          child: FutureBuilder(
-            future: myUser(), 
-            builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) { 
-              
-              if (snapshot.hasData) {
-                return Container();
-              } else {
-                return const SizedBox();
-              }
-             },
-          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Nombre: ${datos.nombre}',
+                      style: const TextStyle(fontSize: 12,color: Colors.white)),
+              Text('Apellidos: ${datos.apellido}',
+                      style: const TextStyle(fontSize: 12,color: Colors.white)),
+              Text('Email: ${datos.email}',
+                      style: const TextStyle(fontSize: 12,color: Colors.white)),
+              Text('Pais: ${datos.pais}',
+                      style: const TextStyle(fontSize: 12,color: Colors.white)),
+              Text('Genero: ${datos.genero}',
+                      style: const TextStyle(fontSize: 12,color: Colors.white)),
+            ],
+          )
         )
       ],
     );

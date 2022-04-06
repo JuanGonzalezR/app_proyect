@@ -34,8 +34,8 @@ class _BodyHome extends StatelessWidget {
     stream: _homeBloc.currentIndexPage,
     initialData: 0,
     builder: (BuildContext context, AsyncSnapshot<int> snap){
-    //int? currentIndex = snap.data;
-      switch (0) {
+    int? currentIndex = snap.data;
+      switch (currentIndex) {
     case 0:
       return const Home();
     case 1:

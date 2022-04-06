@@ -33,7 +33,7 @@ class RegisterBloc with Validators {
   Stream<bool> get submitValidReg =>
   Rx.combineLatest7(nameStreamReg, lastnameStreamReg, emailStreamReg, passwordStreamReg, repeatpasswordStreamReg, fechanacimientoStreamReg, countryStreamReg, (a, b, c, d, e, f, g) => true);
 
-  String get getNameBlocReg => _emailControllerRegister.value;
+  String get getNameBlocReg => _nameControllerRegister.value;
   String get getLastNameBlocReg => _lastnameControllerRegister.value;
   String get getFechaNacimientoBlocReg => _fechaNacimientoControllerRegister.value;
   String get getRepeatPassBlocReg => _repeatpasswordControllerRegister.value;

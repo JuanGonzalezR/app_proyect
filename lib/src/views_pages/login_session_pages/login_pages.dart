@@ -60,12 +60,12 @@ Widget _loginForm(BuildContext context) {
       children: [
         SafeArea(
             child: Container(
-          height: 170.0,
+          height: 190.0,
         )),
         Container(
-          width: size.width * 0.85,
+          width: size.width * 0.90,
           margin: const EdgeInsets.symmetric(vertical: 30.0),
-          padding: const EdgeInsets.symmetric(vertical: 50.0),
+          padding: const EdgeInsets.symmetric(vertical: 30.0),
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20.0),
@@ -77,16 +77,16 @@ Widget _loginForm(BuildContext context) {
                     spreadRadius: 3.0)
               ]),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            padding: const EdgeInsets.symmetric(horizontal: 19.0),
             child: Column(
               children: [
                 _crearEmail(blocLogin),
                 const SizedBox(
-                  height: 40.0,
+                  height: 20.0,
                 ),
                 _crearPassword(blocLogin),
                 const SizedBox(
-                  height: 13.0,
+                  height: 10.0,
                 ),
                 const RecordarPass(),
                 const SizedBox(
@@ -198,7 +198,7 @@ Widget _crearBotonGoogle(
     width: double.infinity,
     child: SignInButton(
       Buttons.Google,
-      text: "Registrese con Google ",
+      text: "Registrate Google ",
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(50.0),
       ),
